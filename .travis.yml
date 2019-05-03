@@ -1,0 +1,76 @@
+sudo: false
+language: python
+
+git:
+  depth: false
+
+python:
+  - "2.7"
+  - "3.4"
+  - "3.5"
+
+env:
+  - DJANGO="==1.11.*"
+  - DJANGO="==2.1.*"
+  - DJANGO="==2.2.*"
+  - DJANGO="master"
+
+jobs:
+  include:
+    - stage: Python 3.6 - Django 2.2
+      dist: xenial
+      python: "3.6"
+      env:
+        - DJANGO="==2.2.*"
+
+    - stage: Python 3.6 - Django Master
+      dist: xenial
+      python: "3.6"
+      env:
+        - DJANGO="master"
+
+    - stage: Python 3.7 - Django 2.2
+      dist: xenial
+      python: "3.7"
+      env:
+        - DJANGO="==2.2.*"
+
+    - stage: Python 3.7 - Django Master
+      dist: xenial
+      python: "3.7"
+      env:
+        - DJANGO="master"
+
+matrix:
+  fast_finish: true
+  exclude:
+    - python: "2.7"
+      env: DJANGO="==2.1.*"
+    - python: "2.7"
+      env: DJANGO="==2.2.*"
+    - python: "2.7"
+      env: DJANGO="master"
+    - python: "3.4"
+      env: DJANGO="==2.1.*"
+    - python: "3.4"
+      env: DJANGO="==2.2.*"
+    - python: "3.4"
+      env: DJANGO="master"
+    - python: "3.5"
+      env: DJANGO="master"
+
+install:
+  - >
+    [ "$DJANGO" == master ] \
+       && django=https://github.com/django/django/archive/master.tar.gz \
+       || django="django${DJANGO}"
+  - pip install tox-travis codecov pytest-cov $django
+  - ./setup.py develop
+script:
+  - >
+    if [ $TRAVIS_PYTHON_VERSION == '2.7' ]; then
+      pytest
+    else
+      pytest --cov --cov-report=
+    fi
+after_success: codecov
