@@ -1,4 +1,5 @@
-from pprint import pprint
+import json
+from os import environ
 from threading import RLock
 
 import pytest
@@ -6,6 +7,11 @@ from django.test.utils import CaptureQueriesContext
 
 lock = RLock()
 _test_data = {}
+
+
+def _get_save_path():
+    return environ.get(
+        'PYTEST_QUERIES_SAVE_PATH', '.pytest-queries.json')
 
 
 def _add_test_to_data(module_name, test_name, query_count):
@@ -17,7 +23,9 @@ def _add_test_to_data(module_name, test_name, query_count):
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_unconfigure(config):
     yield
-    pprint(_test_data)
+
+    with open(_get_save_path(), 'w') as w:
+        json.dump(_test_data, w, indent=2)
 
 
 @pytest.fixture(autouse=True, scope='function')
