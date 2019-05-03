@@ -3,7 +3,7 @@
 from os.path import isfile
 from setuptools import setup
 
-REQUIREMENTS = ['pytest']
+REQUIREMENTS = ['pytest', 'django']
 TEST_REQUIREMENTS = []
 
 
@@ -26,6 +26,8 @@ setup(
     version='0.0.0',
     packages=['pytest_django_queries'],
     include_package_data=True,
+    entry_points={
+        'pytest11': ['django_queries = pytest_django_queries.plugin']},
     classifiers=[
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
@@ -39,6 +41,7 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Framework :: Django',
+        'Framework :: Pytest'
         'Topic :: Software Development :: Libraries :: Application Frameworks',
         'Topic :: Software Development :: Libraries :: Python Modules'],
     install_requires=REQUIREMENTS,
