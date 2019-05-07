@@ -13,8 +13,10 @@ DUMMY_TEST_QUERY = """
             cursor.fetchone()
 """
 
-# Check that the plugin has been properly installed before proceeding
-assert pytest.config.pluginmanager.hasplugin('django_queries')
+
+def test_plugin_is_loaded(request):
+    # Check that the plugin has been properly installed before proceeding
+    assert request.config.pluginmanager.hasplugin('django_queries')
 
 
 def test_fixture_is_invoked_when_marked(temp_results):
