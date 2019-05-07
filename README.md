@@ -1,6 +1,24 @@
 # pytest-django-queries
 Generate performance rapports from your django database performance tests.
 
+## Usage
+Simply install `pytest-django-queries`, write your pytest tests and mark any
+test that should be counted or use the `count_queries` fixture.
+
+```python
+import pytest
+
+
+@pytest.mark.count_queries
+def test_query_performances():
+    Model.objects.all()
+
+
+# Or...
+def test_another_query_performances(count_queries):
+    Model.objects.all()
+```
+
 ## Integrating with GitHub
 
 ## Testing locally
