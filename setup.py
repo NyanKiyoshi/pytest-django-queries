@@ -3,7 +3,8 @@
 from os.path import isfile
 from setuptools import setup
 
-REQUIREMENTS = ['pytest', 'django']
+REQUIREMENTS = [
+    'pluggy==0.11.0', 'pytest', 'django>=1.0,<3.0']
 TEST_REQUIREMENTS = []
 
 
