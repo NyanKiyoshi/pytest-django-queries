@@ -33,7 +33,7 @@ def main():
 @click.option(
     '--html',
     is_flag=True, help='Render the results as HTML instead of a raw table.')
-def view(input_file, html):
+def show(input_file, html):
     """View a given rapport."""
     if not html:
         print_entries(input_file)
