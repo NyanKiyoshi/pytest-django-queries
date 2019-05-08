@@ -1,5 +1,32 @@
-# pytest-django-queries
-Generate performance rapports from your django database performance tests.
+<div align='center'>
+  <h1>pytest-django-queries</h1>
+  <p>Generate performance rapports from your django database performance tests.</p>
+  <p>
+    <a href='https://travis-ci.org/NyanKiyoshi/pytest-django-queries/'>
+      <img src='https://travis-ci.org/NyanKiyoshi/pytest-django-queries.svg?branch=master' alt='Requirement Status' />
+    </a>
+    <a href='https://codecov.io/gh/NyanKiyoshi/pytest-django-queries'>
+      <img src='https://codecov.io/gh/NyanKiyoshi/pytest-django-queries/branch/master/graph/badge.svg' alt='Coverage Status' />
+    </a>
+    <a href='https://pypi.python.org/pypi/pytest-django-queries'>
+      <img src='https://img.shields.io/pypi/v/pytest-django-queries.svg' alt='Version' />
+    </a>
+    <a href='https://requires.io/github/NyanKiyoshi/pytest-django-queries/requirements/?branch=master'>
+      <img src='https://requires.io/github/NyanKiyoshi/pytest-django-queries/requirements.svg?branch=master' alt='Requirement Status' />
+    </a>
+  </p>
+  <p>
+    <a href='https://github.com/pytest-dev/pytest-cov/compare/v0.0.0...master'>
+      <img src='https://img.shields.io/github/commits-since/NyanKiyoshi/pytest-django-queries/v0.0.0.svg' alt='Commits since latest release' />
+    </a>
+    <a href='https://pypi.python.org/pypi/pytest-django-queries'>
+      <img src='https://img.shields.io/pypi/pyversions/pytest-django-queries.svg' alt='Supported versions' />
+    </a>
+    <a href='https://pypi.python.org/pypi/pytest-django-queries'>
+      <img src='https://img.shields.io/pypi/implementation/pytest-django-queries.svg' alt='Supported implementations' />
+    </a>
+  </p>
+</div>
 
 ## Usage
 Simply install `pytest-django-queries`, write your pytest tests and mark any
