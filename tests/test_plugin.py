@@ -1,4 +1,4 @@
-import pytest
+import json
 
 DUMMY_TEST_QUERY = """
     import pytest
@@ -33,6 +33,13 @@ def test_fixture_is_invoked_when_marked(temp_results):
 
     # Ensure the results file was created
     assert results_path.check()
+    assert json.load(results_path) == {
+      "test_fixture_is_invoked_when_marked": {
+        "test_count_db_query_number": {
+          "query-count": 2
+        }
+      }
+    }
 
 
 def test_plugin_exports_nothing_if_empty(temp_results):
@@ -78,6 +85,13 @@ def test_plugin_exports_results_even_when_test_fails(temp_results):
 
     # Ensure the results file was created
     assert results_path.check()
+    assert json.load(results_path) == {
+      "test_plugin_exports_results_even_when_test_fails": {
+        "test_failure": {
+          "query-count": 0
+        }
+      }
+    }
 
 
 def test_marker_message(testdir):
