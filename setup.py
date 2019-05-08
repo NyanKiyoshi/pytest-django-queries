@@ -4,8 +4,14 @@ from sys import version_info
 from os.path import isfile
 from setuptools import setup
 
-REQUIREMENTS = ['pytest>=4.4.0', 'freezegun']
-DEV_REQUIREMENTS = []
+REQUIREMENTS = [
+    # Plugin dependencies
+    'pytest>=4.4.0',
+
+    # Cli dependencies
+    'Click', 'beautifultable', 'json2html'
+]
+DEV_REQUIREMENTS = ['freezegun']
 
 if version_info < (3, ):
     REQUIREMENTS.append('django<2')
@@ -51,6 +57,5 @@ setup(
         'Topic :: Software Development :: Libraries :: Application Frameworks',
         'Topic :: Software Development :: Libraries :: Python Modules'],
     install_requires=REQUIREMENTS,
-    extra_requires={
-        "dev": DEV_REQUIREMENTS},
+    extras_require={'dev': DEV_REQUIREMENTS},
     zip_safe=False)

@@ -1,7 +1,7 @@
 import click
 from beautifultable import BeautifulTable
 
-from pytest_django_queries.cli_utils import raise_error
+from pytest_django_queries.utils import raise_error, assert_type
 
 
 class TestEntryData(object):
@@ -19,9 +19,7 @@ class TestEntryData(object):
         :type data: dict
         """
 
-        if type(data) != dict:
-            raise_error(
-                'Expected a dictionary, got %s instead' % type(data).__name__)
+        assert_type(data, dict)
 
         self._raw_data = data
         self.test_name = test_name
@@ -36,10 +34,12 @@ class TestEntryData(object):
 
 
 def iter_entries(entries):
-    for module_name, module_data in entries.items():
+    for module_name, module_data in sorted(entries.items()):
+        assert_type(module_data, dict)
+
         yield module_name, (
             TestEntryData(test_name, test_data)
-            for test_name, test_data in module_data.items())
+            for test_name, test_data in sorted(module_data.items()))
 
 
 def print_entries(data):
