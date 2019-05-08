@@ -17,7 +17,7 @@ def _get_date_now():
     return datetime.now().strftime('%m-%d-%Y-%H-%M-%S')
 
 
-def _get_save_path():
+def _make_save_path():
     """Retrieve the save path from the environment variable value or make one
     using the current date and time."""
     return environ.get(ENV_QUERY_SAVE_PATH, None) or (
@@ -41,7 +41,7 @@ class _Session(object):
         module_data[test_name] = {'query-count': query_count}
 
     def save_json(self):
-        with open(_get_save_path(), 'w') as fp:
+        with open(_make_save_path(), 'w') as fp:
             json.dump(self._data, fp, indent=2)
 
     def finish(self):

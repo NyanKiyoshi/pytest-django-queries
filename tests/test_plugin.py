@@ -1,5 +1,7 @@
 import json
 
+from freezegun import freeze_time
+
 DUMMY_TEST_QUERY = """
     import pytest
     
@@ -100,3 +102,12 @@ def test_marker_message(testdir):
     result.stdout.fnmatch_lines([
         '@pytest.mark.count_queries: '
         'Mark the test as to have their queries counted.'])
+
+
+@freeze_time('2012-01-14 03:21:34')
+def test_get_save_path_returns_filename_with_date():
+    from pytest_django_queries.plugin import _make_save_path
+
+    filename = _make_save_path()
+    assert filename.startswith('.pytest-queries-')
+    assert filename.endswith('-01-14-2012-03-21-34.json')
