@@ -2,6 +2,8 @@ import json
 
 import click
 
+from pytest_django_queries.tables import print_entries
+
 
 class JsonFileParamType(click.File):
     name = 'integer'
@@ -10,7 +12,10 @@ class JsonFileParamType(click.File):
         fp = super(JsonFileParamType, self).convert(value, param, ctx)
         if fp is not None:
             try:
-                return json.load(fp)
+                loaded = json.load(fp)
+                if type(loaded) is not dict:
+                    self.fail('The file is not a dictionary', param, ctx)
+                return loaded
             except ValueError as e:
                 self.fail(
                     'The file is not valid json: %s' % str(e),
@@ -25,9 +30,15 @@ def main():
 
 @main.command()
 @click.argument('input_file', type=JsonFileParamType('r'))
-def view(input_file):
-    """View a rapport."""
-    click.echo()
+@click.option(
+    '--html',
+    is_flag=True, help='Render the results as HTML instead of a raw table.')
+def view(input_file, html):
+    """View a given rapport."""
+    if not html:
+        print_entries(input_file)
+        return
+    raise NotImplementedError
 
 
 if __name__ == '__main__':
