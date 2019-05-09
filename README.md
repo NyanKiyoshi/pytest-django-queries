@@ -59,3 +59,17 @@ environment variable to any given valid path.
 ## Visualising Results
 
 ## Comparing results
+
+## Development
+First of all, clone the project locally. Then, install it using the below command.
+
+```shell
+./setup.py develop
+```
+
+After that, you need to install the development requirements. For that, 
+run the below command.
+
+```shell
+pip install -e .[dev]
+```

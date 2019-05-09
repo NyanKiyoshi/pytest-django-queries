@@ -1,10 +1,16 @@
 #!/usr/bin/env python
 
+from sys import version_info
 from os.path import isfile
 from setuptools import setup
 
-REQUIREMENTS = ['pytest', 'django', 'freezegun']
-TEST_REQUIREMENTS = []
+REQUIREMENTS = ['pytest>=4.4.0', 'freezegun']
+DEV_REQUIREMENTS = []
+
+if version_info < (3, ):
+    REQUIREMENTS.append('django<2')
+else:
+    REQUIREMENTS.append('django')
 
 
 if isfile('README.md'):
@@ -45,5 +51,6 @@ setup(
         'Topic :: Software Development :: Libraries :: Application Frameworks',
         'Topic :: Software Development :: Libraries :: Python Modules'],
     install_requires=REQUIREMENTS,
-    tests_require=TEST_REQUIREMENTS,
+    extra_requires={
+        "dev": DEV_REQUIREMENTS},
     zip_safe=False)
