@@ -4,7 +4,7 @@ from os.path import isfile
 from setuptools import setup
 
 REQUIREMENTS = ['pytest', 'django', 'freezegun']
-TEST_REQUIREMENTS = []
+DEV_REQUIREMENTS = []
 
 
 if isfile('README.md'):
@@ -45,5 +45,6 @@ setup(
         'Topic :: Software Development :: Libraries :: Application Frameworks',
         'Topic :: Software Development :: Libraries :: Python Modules'],
     install_requires=REQUIREMENTS,
-    tests_require=TEST_REQUIREMENTS,
+    extra_requires={
+        "dev": DEV_REQUIREMENTS},
     zip_safe=False)

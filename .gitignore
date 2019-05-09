@@ -3,4 +3,5 @@ venv/
 *.pyc
 *.egg-info/
 .pytest*
-
+.coverage
+*cov/

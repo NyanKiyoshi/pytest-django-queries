@@ -59,3 +59,10 @@ environment variable to any given valid path.
 ## Visualising Results
 
 ## Comparing results
+
+## Development
+Install the development requirements by running the below command.
+
+```shell
+pip install -e .[dev]
+```
