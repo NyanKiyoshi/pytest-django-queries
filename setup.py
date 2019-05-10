@@ -29,7 +29,7 @@ setup(
                 'performance tests.',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    version='0.1.0rc1',
+    version='0.1.0',
     packages=['pytest_django_queries'],
     include_package_data=True,
     entry_points={
