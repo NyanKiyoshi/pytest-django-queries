@@ -9,7 +9,7 @@ REQUIREMENTS = [
     'pytest>=4.4.0',
 
     # Cli dependencies
-    'Click', 'beautifultable', 'json2html'
+    'Click', 'beautifultable', 'jinja2'
 ]
 DEV_REQUIREMENTS = ['freezegun']
 
@@ -39,7 +39,8 @@ setup(
     packages=['pytest_django_queries'],
     include_package_data=True,
     entry_points={
-        'pytest11': ['django_queries = pytest_django_queries.plugin']},
+        'pytest11': ['django_queries = pytest_django_queries.plugin'],
+        'console_scripts': ['django-queries = pytest_django_queries.cli:main']},
     classifiers=[
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
