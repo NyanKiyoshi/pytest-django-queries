@@ -26,29 +26,31 @@ HTML_TEMPLATE = '''
         <h1 class="text-center mt-5 mb-5">Benchmark Results</h1>
         
         {% for module_name, module_data in data %}
-            <h2 class="text-capitalize">{{ humanize(module_name) }}</h2>
-            
-            <table class="table table-bordered mb-5">
-                <thead>
-                    <tr>
-                        <th>Benchmark name</th>
-                        <th>Query count</th>
-                    </tr>
-                </thead>
+            <section>
+                <h2 class="text-capitalize">{{ humanize(module_name) }}</h2>
                 
-                <tbody>
-                    {% for test_entry in module_data %} 
+                <table class="table table-bordered mb-5">
+                    <thead>
                         <tr>
-                            <td class="text-capitalize">
-                                <code>{{ humanize(test_entry.test_name) }}</code>
-                            </td>
-                            <td>
-                                <strong>{{ test_entry['query-count'] }}</strong>
-                            </td>
+                            <th>Benchmark name</th>
+                            <th>Query count</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    
+                    <tbody>
+                        {% for test_entry in module_data %} 
+                            <tr>
+                                <td class="text-capitalize">
+                                    <code>{{ humanize(test_entry.test_name) }}</code>
+                                </td>
+                                <td>
+                                    <strong>{{ test_entry['query-count'] }}</strong>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
         {% endfor %}
     </body>
 </html>

@@ -11,7 +11,7 @@ REQUIREMENTS = [
     # Cli dependencies
     'Click', 'beautifultable', 'jinja2'
 ]
-DEV_REQUIREMENTS = ['freezegun']
+DEV_REQUIREMENTS = ['freezegun', 'beautifulsoup4', 'lxml']
 
 if version_info < (3, ):
     REQUIREMENTS.append('django<2')
