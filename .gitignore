@@ -5,3 +5,4 @@ venv/
 .pytest*
 .coverage
 *cov/
+dist/
