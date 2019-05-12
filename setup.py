@@ -4,8 +4,14 @@ from sys import version_info
 from os.path import isfile
 from setuptools import setup
 
-REQUIREMENTS = ['pytest>=4.4.0', 'freezegun']
-DEV_REQUIREMENTS = []
+REQUIREMENTS = [
+    # Plugin dependencies
+    'pytest>=4.4.0',
+
+    # Cli dependencies
+    'Click', 'beautifultable', 'jinja2'
+]
+DEV_REQUIREMENTS = ['freezegun', 'beautifulsoup4', 'lxml']
 
 if version_info < (3, ):
     REQUIREMENTS.append('django<2')
@@ -33,7 +39,8 @@ setup(
     packages=['pytest_django_queries'],
     include_package_data=True,
     entry_points={
-        'pytest11': ['django_queries = pytest_django_queries.plugin']},
+        'pytest11': ['django_queries = pytest_django_queries.plugin'],
+        'console_scripts': ['django-queries = pytest_django_queries.cli:main']},
     classifiers=[
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
@@ -51,6 +58,5 @@ setup(
         'Topic :: Software Development :: Libraries :: Application Frameworks',
         'Topic :: Software Development :: Libraries :: Python Modules'],
     install_requires=REQUIREMENTS,
-    extra_requires={
-        "dev": DEV_REQUIREMENTS},
+    extras_require={'dev': DEV_REQUIREMENTS},
     zip_safe=False)

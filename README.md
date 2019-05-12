@@ -1,6 +1,7 @@
 <div align='center'>
   <h1>pytest-django-queries</h1>
-  <p>Generate performance rapports from your django database performance tests.</p>
+  <p>Generate performance rapports from your django database performance tests
+  (inspired by <a href='https://coverage.readthedocs.io/en/v4.5.x/'>coverage.py</a>).</p>
   <p>
     <a href='https://travis-ci.org/NyanKiyoshi/pytest-django-queries/'>
       <img src='https://travis-ci.org/NyanKiyoshi/pytest-django-queries.svg?branch=master' alt='Requirement Status' />
@@ -46,6 +47,11 @@ def test_another_query_performances(count_queries):
     Model.objects.all()
 ```
 
+Each test file and/or package is considered as a category. Each test inside a "category"
+compose its data, see [Visualising Results](#visualising-results) for more details.
+
+<!-- TODO: insert a graphic here to explain how it works -->
+
 ## Integrating with GitHub
 
 ## Testing locally
@@ -57,6 +63,40 @@ Note: to override the save path, set the `PYTEST_QUERIES_SAVE_PATH`
 environment variable to any given valid path.
 
 ## Visualising Results
+You can generate a table from the tests results by using the `show` command:
+```shell
+django-queries show <json file>
+```
+
+You will get something like this to represent the results:
+```shell
++---------+-------------------------+
+| Module  |          Tests          |
++---------+-------------------------+
+| module1 | +-----------+---------+ |
+|         | | Test Name | Queries | |
+|         | +-----------+---------+ |
+|         | |   test1   |    0    | |
+|         | +-----------+---------+ |
+|         | |   test2   |    1    | |
+|         | +-----------+---------+ |
++---------+-------------------------+
+| module2 | +-----------+---------+ |
+|         | | Test Name | Queries | |
+|         | +-----------+---------+ |
+|         | |   test1   |   123   | |
+|         | +-----------+---------+ |
++---------+-------------------------+
+| module3 |                         |
++---------+-------------------------+
+```
+
+## Exporting the results (HTML)
+For a nicer presentation, use the `html` command, to export the results as HTML.
+```shell
+django-queries html <json file> > results.html
+```
+<!-- todo: add example page link -->
 
 ## Comparing results
 

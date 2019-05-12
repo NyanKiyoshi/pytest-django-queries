@@ -5,4 +5,5 @@ venv/
 .pytest*
 .coverage
 *cov/
+*.html
 dist/
