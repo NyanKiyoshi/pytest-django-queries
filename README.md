@@ -12,6 +12,9 @@
     <a href='https://pypi.python.org/pypi/pytest-django-queries'>
       <img src='https://img.shields.io/pypi/v/pytest-django-queries.svg' alt='Version' />
     </a>
+    <a href="https://pypi.org/project/pytest-django-queries/1.0.0.dev1/">
+      <img src="https://img.shields.io/badge/pypi%20unstable-v1.0.0.dev1-FF0000.svg" alt="Code style: black">
+    </a>
     <a href='https://requires.io/github/NyanKiyoshi/pytest-django-queries/requirements/?branch=master'>
       <img src='https://requires.io/github/NyanKiyoshi/pytest-django-queries/requirements.svg?branch=master' alt='Requirement Status' />
     </a>
@@ -30,8 +33,10 @@
 </div>
 
 ## Usage
-Simply install `pytest-django-queries`, write your pytest tests and mark any
+Install `pytest-django-queries`, write your pytest tests and mark any
 test that should be counted or use the `count_queries` fixture.
+
+Note: to use the latest development build, use `pip install --pre pytest-django-queries`
 
 ```python
 import pytest
