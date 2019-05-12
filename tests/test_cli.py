@@ -127,3 +127,63 @@ def test_load_valid_json_file_shows_correct_html_data(testdir):
             assert (
                 received_count.get_text(strip=True) == str(expected_data['query-count'])
             )
+
+
+@pytest.mark.parametrize('test_data', (
+    {},
+    {'my test section': {}},
+))
+def test_load_valid_json_without_data_is_empty_result(testdir, test_data):
+    testdir.makefile('.json', test_file=json.dumps(test_data))
+
+    runner = CliRunner()
+    result = runner.invoke(cli.main, ['html', 'test_file.json'])
+    assert result.exit_code == 0, result.stdout
+
+    soup = BeautifulSoup(result.stdout, 'lxml')
+    sections = soup.select('section')
+
+    if not test_data.keys():
+        # if there is no data, no section should have been created
+        assert not sections
+    else:
+        # if there is data, there should not have an error message
+        assert not soup.select('body > p')
+
+        # retrieve the section, should only be one
+        assert len(sections) == 1
+        soup = sections[0]
+
+        # check the title
+        assert soup.select_one('h2').get_text(strip=True) == 'my test section'
+
+    # test if the render says there is no data
+    received_text = soup.select_one('p')
+    assert received_text is not None, 'No message'
+    assert received_text.get_text(strip=True) == "No data."
+
+
+def test_export_to_html_using_custom_template(testdir):
+    testdir.makefile('.json', test_file='{}')
+    testdir.makefile('.html', test_template='{{ "hello world" }}')
+
+    runner = CliRunner()
+    result = runner.invoke(cli.main, [
+        'html', 'test_file.json',
+        '--template', 'test_template.html'])
+    assert result.exit_code == 0, result.stdout
+    assert result.stdout == 'hello world'
+
+
+def test_export_to_html_using_invalid_custom_template_should_fail(testdir):
+    testdir.makefile('.json', test_file='{}')
+    testdir.makefile('.html', test_template='{% "hello world" %}')
+
+    runner = CliRunner()
+    result = runner.invoke(cli.main, [
+        'html', 'test_file.json',
+        '--template', 'test_template.html'])
+    assert result.exit_code == 2, result.stdout
+    assert (
+        'Error: Invalid value for "--template": '
+        'The file is not a valid jinja2 template: tag name expected' in result.stdout)

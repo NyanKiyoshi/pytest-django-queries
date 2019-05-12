@@ -12,17 +12,16 @@ class JsonFileParamType(click.File):
 
     def convert(self, value, param, ctx):
         fp = super(JsonFileParamType, self).convert(value, param, ctx)
-        if fp is not None:
-            try:
-                loaded = json.load(fp)
-                if type(loaded) is not dict:
-                    self.fail('The file is not a dictionary', param, ctx)
-                return loaded
-            except ValueError as e:
-                self.fail(
-                    'The file is not valid json: %s' % str(e),
-                    param,
-                    ctx)
+        try:
+            loaded = json.load(fp)
+            if type(loaded) is not dict:
+                self.fail('The file is not a dictionary', param, ctx)
+            return loaded
+        except ValueError as e:
+            self.fail(
+                'The file is not valid json: %s' % str(e),
+                param,
+                ctx)
 
 
 class Jinja2TemplateFile(click.File):
@@ -30,14 +29,13 @@ class Jinja2TemplateFile(click.File):
 
     def convert(self, value, param, ctx):
         fp = super(Jinja2TemplateFile, self).convert(value, param, ctx)
-        if fp is not None:
-            try:
-                return Template(fp.read())
-            except jinja_exceptions.TemplateError as e:
-                self.fail(
-                    'The file is not a valid jinja2 template: %s' % str(e),
-                    param,
-                    ctx)
+        try:
+            return Template(fp.read())
+        except jinja_exceptions.TemplateError as e:
+            self.fail(
+                'The file is not a valid jinja2 template: %s' % str(e),
+                param,
+                ctx)
 
 
 @click.group()

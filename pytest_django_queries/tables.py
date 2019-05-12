@@ -47,10 +47,18 @@ HTML_TEMPLATE = '''
                                     <strong>{{ test_entry['query-count'] }}</strong>
                                 </td>
                             </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="2">
+                                    <p>No data.</p>
+                                </td>
+                            </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </section>
+        {% else %}
+            <p>No data.</p>
         {% endfor %}
     </body>
 </html>
@@ -119,4 +127,4 @@ def print_entries_as_html(data, template):
     template = template or Template(HTML_TEMPLATE)
     html_content = template.render(
         data=iter_entries(data), humanize=format_underscore_name_to_human)
-    click.echo(html_content)
+    click.echo(html_content, nl=False)
