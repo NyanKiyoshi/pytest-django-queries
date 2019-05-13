@@ -62,10 +62,9 @@ compose its data, see [Visualising Results](#visualising-results) for more detai
 ## Testing locally
 Simply install `pytest-django-queries` through pip and run your 
 tests using `pytest`. A report should have been generated in your
-current working directory in a JSON file prefixed with `.pytest-queries`.
+current working directory in a file called with `.pytest-queries`.
 
-Note: to override the save path, set the `PYTEST_QUERIES_SAVE_PATH`
-environment variable to any given valid path.
+Note: to override the save path, pass the `--django-db-bench PATH` option to pytest.
 
 ## Visualising Results
 You can generate a table from the tests results by using the `show` command:

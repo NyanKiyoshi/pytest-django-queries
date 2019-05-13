@@ -1,7 +1,5 @@
 import json
 
-from freezegun import freeze_time
-
 DUMMY_TEST_QUERY = """
     import pytest
     
@@ -21,14 +19,14 @@ def test_plugin_is_loaded(request):
     assert request.config.pluginmanager.hasplugin('django_queries')
 
 
-def test_fixture_is_invoked_when_marked(temp_results):
+def test_fixture_is_invoked_when_marked(testdir):
     """Ensure marking a test is actually calling the fixture."""
-    testdir, results_path = temp_results
+    results_path = testdir.tmpdir.join('results.json')
 
     # Run a dummy test that performs queries
     # and triggers a counting of the query number
     testdir.makepyfile(DUMMY_TEST_QUERY)
-    results = testdir.runpytest()
+    results = testdir.runpytest('--django-db-bench', results_path)
 
     # Ensure the tests have passed
     results.assert_outcomes(1, 0, 0)
@@ -44,11 +42,11 @@ def test_fixture_is_invoked_when_marked(temp_results):
     }
 
 
-def test_plugin_exports_nothing_if_empty(temp_results):
+def test_plugin_exports_nothing_if_empty(testdir):
     """Ensure the plugin does not export any results if no performance
     tests were run."""
 
-    testdir, results_path = temp_results
+    results_path = testdir.tmpdir.join('results.json')
 
     # Run a dummy test that performs queries
     # and triggers a counting of the query number
@@ -56,7 +54,7 @@ def test_plugin_exports_nothing_if_empty(temp_results):
         def test_nothing():
             pass
     """)
-    results = testdir.runpytest()
+    results = testdir.runpytest('--django-db-bench', results_path)
 
     # Ensure the tests have passed
     results.assert_outcomes(1, 0, 0)
@@ -65,11 +63,11 @@ def test_plugin_exports_nothing_if_empty(temp_results):
     assert not results_path.check()
 
 
-def test_plugin_exports_results_even_when_test_fails(temp_results):
+def test_plugin_exports_results_even_when_test_fails(testdir):
     """Ensure the plugin does not export any results if no performance
     tests were run."""
 
-    testdir, results_path = temp_results
+    results_path = testdir.tmpdir.join('results.json')
 
     # Run a dummy test that performs queries
     # and triggers a counting of the query number
@@ -80,7 +78,7 @@ def test_plugin_exports_results_even_when_test_fails(temp_results):
         def test_failure():
             assert 0
     """)
-    results = testdir.runpytest()
+    results = testdir.runpytest('--django-db-bench', results_path)
 
     # Ensure the tests have passed
     results.assert_outcomes(0, 0, 1)
@@ -102,12 +100,3 @@ def test_marker_message(testdir):
     result.stdout.fnmatch_lines([
         '@pytest.mark.count_queries: '
         'Mark the test as to have their queries counted.'])
-
-
-@freeze_time('2012-01-14 03:21:34')
-def test_get_save_path_returns_filename_with_date():
-    from pytest_django_queries.plugin import _make_save_path
-
-    filename = _make_save_path()
-    assert filename.startswith('.pytest-queries-')
-    assert filename.endswith('-01-14-2012-03-21-34.json')
