@@ -1,27 +1,10 @@
 import json
-from datetime import datetime
-from os import environ
 
 import pytest
 from django.test.utils import CaptureQueriesContext
 
-# Defines the environment variable name
-# for overriding the export path
-ENV_QUERY_SAVE_PATH = 'PYTEST_QUERIES_SAVE_PATH'
-
 # Defines the plugin marker name
 PYTEST_QUERY_COUNT_MARKER = 'count_queries'
-
-
-def _get_date_now():
-    return datetime.now().strftime('%m-%d-%Y-%H-%M-%S')
-
-
-def _make_save_path():
-    """Retrieve the save path from the environment variable value or make one
-    using the current date and time."""
-    return environ.get(ENV_QUERY_SAVE_PATH, None) or (
-        '.pytest-queries-{}.json'.format(_get_date_now()))
 
 
 def _set_session(config, new_session):
@@ -33,7 +16,8 @@ def _get_session(request):
 
 
 class _Session(object):
-    def __init__(self):
+    def __init__(self, save_path):
+        self.save_path = save_path
         self._data = {}
 
     def add_entry(self, module_name, test_name, query_count):
@@ -41,7 +25,7 @@ class _Session(object):
         module_data[test_name] = {'query-count': query_count}
 
     def save_json(self):
-        with open(_make_save_path(), 'w') as fp:
+        with open(self.save_path, 'w') as fp:
             json.dump(self._data, fp, indent=2)
 
     def finish(self):
@@ -53,6 +37,17 @@ class _Session(object):
         self.save_json()
 
 
+def pytest_addoption(parser):
+    group = parser.getgroup('django-queries')
+    group.addoption(
+        '--django-db-bench',
+        dest='queries_results_save_path',
+        action='store',
+        default='.pytest-queries',
+        metavar='PATH',
+        help='Output file for storing the results. Default: .pytest-queries')
+
+
 @pytest.mark.tryfirst
 def pytest_configure(config):
     """Append the plugin markers to the pytest configuration."""
@@ -60,7 +55,13 @@ def pytest_configure(config):
        '%s: Mark the test as to have their queries counted.'
        '' % PYTEST_QUERY_COUNT_MARKER)
     config.addinivalue_line('markers', config_line)
-    _set_session(config, _Session())
+
+
+@pytest.mark.tryfirst
+def pytest_load_initial_conftests(early_config, parser, args):
+    _set_session(
+        early_config,
+        _Session(early_config.known_args_namespace.queries_results_save_path))
 
 
 @pytest.hookimpl(hookwrapper=True)
