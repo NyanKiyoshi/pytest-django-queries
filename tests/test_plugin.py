@@ -100,3 +100,14 @@ def test_marker_message(testdir):
     result.stdout.fnmatch_lines([
         '@pytest.mark.count_queries: '
         'Mark the test as to have their queries counted.'])
+
+
+def test_implements_custom_options(testdir):
+    """Ensure the custom options are added to pytest."""
+    result = testdir.runpytest('--help')
+    result.stdout.fnmatch_lines([
+        'django-queries:',
+        '*--django-db-bench=PATH',
+        '*Output file for storing the results. Default: .pytest-',
+        '*queries'
+    ])
