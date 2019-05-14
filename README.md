@@ -9,14 +9,14 @@
     <a href='https://codecov.io/gh/NyanKiyoshi/pytest-django-queries'>
       <img src='https://codecov.io/gh/NyanKiyoshi/pytest-django-queries/branch/master/graph/badge.svg' alt='Coverage Status' />
     </a>
+    <a href='https://pytest-django-queries.readthedocs.io/en/latest/?badge=latest'>
+      <img src='https://readthedocs.org/projects/pytest-django-queries/badge/?version=latest' alt='Documentation Status' />
+    </a>
     <a href='https://pypi.python.org/pypi/pytest-django-queries'>
       <img src='https://img.shields.io/pypi/v/pytest-django-queries.svg' alt='Version' />
     </a>
     <a href="https://pypi.org/project/pytest-django-queries/1.0.0a1/">
-      <img src="https://img.shields.io/badge/pypi%20unstable-v1.0.0a1-FF0000.svg" alt="Code style: black">
-    </a>
-    <a href='https://requires.io/github/NyanKiyoshi/pytest-django-queries/requirements/?branch=master'>
-      <img src='https://requires.io/github/NyanKiyoshi/pytest-django-queries/requirements.svg?branch=master' alt='Requirement Status' />
+      <img src="https://img.shields.io/badge/pypi%20unstable-v1.0.0a1-FF0000.svg" alt="Latest Unstable on pypi">
     </a>
   </p>
   <p>
@@ -54,6 +54,8 @@ def test_another_query_performances(count_queries):
 
 Each test file and/or package is considered as a category. Each test inside a "category"
 compose its data, see [Visualising Results](#visualising-results) for more details.
+
+You will find the [full documentation here](https://pytest-django-queries.readthedocs.io/).
 
 <!-- TODO: insert a graphic here to explain how it works -->
 

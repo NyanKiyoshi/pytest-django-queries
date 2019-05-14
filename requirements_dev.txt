@@ -1,0 +1,4 @@
+beautifulsoup4
+lxml
+sphinx
+sphinx_rtd_theme

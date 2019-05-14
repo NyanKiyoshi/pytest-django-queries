@@ -7,3 +7,4 @@ venv/
 *cov/
 *.html
 dist/
+docs/_build/

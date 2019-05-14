@@ -19,6 +19,6 @@
    coverage, meaning that all the code is covered by automatic tests. Please test
    all your changes and test them hastily, don’t test just for the sake of testing
    and to get a proper coverage... it’s wrong. We want the tests to prevent any error and
-  any potential breaking from changes!
+   any potential breaking from changes!
 1. Finally, make sure you are using the latest version of the dependencies and that
    you have read our documentations.
