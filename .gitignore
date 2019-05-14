@@ -5,6 +5,5 @@ venv/
 .pytest*
 .coverage
 *cov/
-*.html
 dist/
 docs/_build/
