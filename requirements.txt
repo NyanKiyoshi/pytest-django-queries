@@ -1,0 +1,8 @@
+pytest>=4.4.0
+django<2 ; python_version < '3.0'
+django   ; python_version >= '3.0'
+
+# Cli dependencies
+Click
+beautifultable
+jinja2

@@ -4,27 +4,22 @@ from sys import version_info
 from os.path import isfile
 from setuptools import setup
 
-REQUIREMENTS = [
-    # Plugin dependencies
-    'pytest>=4.4.0',
 
-    # Cli dependencies
-    'Click', 'beautifultable', 'jinja2'
-]
-DEV_REQUIREMENTS = ['beautifulsoup4', 'lxml']
+def _read_file(path):
+    with open(path) as fp:
+        return fp.read().strip()
 
-if version_info < (3, ):
-    REQUIREMENTS.append('django<2')
-else:
-    REQUIREMENTS.append('django')
+
+PROJECT_VERSION = _read_file('VERSION.txt')
+
+REQUIREMENTS = _read_file('requirements.txt').split('\n')
+DEV_REQUIREMENTS = _read_file('requirements_dev.txt').split('\n')
 
 
 if isfile('README.md'):
-    with open('README.md') as fp:
-        long_description = fp.read()
+   long_description = _read_file('README.md')
 else:
     long_description = ''
-
 
 setup(
     name='pytest-django-queries',
@@ -35,8 +30,9 @@ setup(
                 'performance tests.',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    version='1.0.0a1',
+    version=PROJECT_VERSION,
     packages=['pytest_django_queries'],
+    package_data={'': ['VERSION.txt', 'LICENSE']},
     include_package_data=True,
     entry_points={
         'pytest11': ['django_queries = pytest_django_queries.plugin'],
