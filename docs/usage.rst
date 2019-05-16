@@ -20,7 +20,7 @@ The HTML Command
 
 .. code-block:: text
 
-    Usage: django-queries html [OPTIONS] INPUT_FILE
+    Usage: django-queries html [OPTIONS] [INPUT_FILE]
 
     Render the results as HTML instead of a raw table.
 
@@ -34,7 +34,7 @@ The SHOW Command
 
 .. code-block:: text
 
-    Usage: django-queries show [OPTIONS] INPUT_FILE
+    Usage: django-queries show [OPTIONS] [INPUT_FILE]
 
     View a given rapport.
 

@@ -4,6 +4,7 @@ import click
 from jinja2 import Template
 from jinja2 import exceptions as jinja_exceptions
 
+from pytest_django_queries.plugin import DEFAULT_RESULT_FILENAME
 from pytest_django_queries.tables import print_entries, print_entries_as_html
 
 
@@ -44,14 +45,16 @@ def main():
 
 
 @main.command()
-@click.argument('input_file', type=JsonFileParamType('r'))
+@click.argument(
+    'input_file', type=JsonFileParamType('r'), default=DEFAULT_RESULT_FILENAME)
 def show(input_file):
     """View a given rapport."""
     return print_entries(input_file)
 
 
 @main.command()
-@click.argument('input_file', type=JsonFileParamType('r'))
+@click.argument(
+    'input_file', type=JsonFileParamType('r'), default=DEFAULT_RESULT_FILENAME)
 @click.option('--template', type=Jinja2TemplateFile('r'), required=False)
 def html(input_file, template):
     """Render the results as HTML instead of a raw table."""

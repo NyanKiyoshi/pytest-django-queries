@@ -5,6 +5,7 @@ from django.test.utils import CaptureQueriesContext
 
 # Defines the plugin marker name
 PYTEST_QUERY_COUNT_MARKER = 'count_queries'
+DEFAULT_RESULT_FILENAME = '.pytest-queries'
 
 
 def _set_session(config, new_session):
@@ -43,7 +44,7 @@ def pytest_addoption(parser):
         '--django-db-bench',
         dest='queries_results_save_path',
         action='store',
-        default='.pytest-queries',
+        default=DEFAULT_RESULT_FILENAME,
         metavar='PATH',
         help='Output file for storing the results. Default: .pytest-queries')
 

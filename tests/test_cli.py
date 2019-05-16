@@ -14,7 +14,7 @@ def test_load_invalid_json_file_triggers_error(testdir):
     result = runner.invoke(cli.main, ['show', 'test_file.json'])
     assert result.exit_code == 2, result.stdout
     assert (
-        'Error: Invalid value for "INPUT_FILE": '
+        'Error: Invalid value for "[INPUT_FILE]": '
         'The file is not valid json: ') in result.stdout
 
 
