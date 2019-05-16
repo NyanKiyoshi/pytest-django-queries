@@ -71,7 +71,7 @@ Note: to override the save path, pass the `--django-db-bench PATH` option to pyt
 ## Visualising Results
 You can generate a table from the tests results by using the `show` command:
 ```shell
-django-queries show <json file>
+django-queries show
 ```
 
 You will get something like this to represent the results:
@@ -100,7 +100,7 @@ You will get something like this to represent the results:
 ## Exporting the results (HTML)
 For a nicer presentation, use the `html` command, to export the results as HTML.
 ```shell
-django-queries html <json file> > results.html
+django-queries html > results.html
 ```
 <!-- todo: add example page link -->
 
