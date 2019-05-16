@@ -1,4 +1,6 @@
 import json
+from os.path import abspath, dirname
+from os.path import join as pathjoin
 
 import click
 from jinja2 import Template
@@ -6,6 +8,9 @@ from jinja2 import exceptions as jinja_exceptions
 
 from pytest_django_queries.plugin import DEFAULT_RESULT_FILENAME
 from pytest_django_queries.tables import print_entries, print_entries_as_html
+
+HERE = dirname(__file__)
+DEFAULT_TEMPLATE_PATH = abspath(pathjoin(HERE, 'templates', 'default_bootstrap.jinja2'))
 
 
 class JsonFileParamType(click.File):
@@ -55,7 +60,7 @@ def show(input_file):
 @main.command()
 @click.argument(
     'input_file', type=JsonFileParamType('r'), default=DEFAULT_RESULT_FILENAME)
-@click.option('--template', type=Jinja2TemplateFile('r'), required=False)
+@click.option('--template', type=Jinja2TemplateFile('r'), default=DEFAULT_TEMPLATE_PATH)
 def html(input_file, template):
     """Render the results as HTML instead of a raw table."""
     return print_entries_as_html(input_file, template)

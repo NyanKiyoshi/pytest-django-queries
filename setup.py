@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from sys import version_info
 from os.path import isfile
 from setuptools import setup
 
@@ -32,7 +31,6 @@ setup(
     long_description_content_type='text/markdown',
     version=PROJECT_VERSION,
     packages=['pytest_django_queries'],
-    package_data={'': ['VERSION.txt', 'LICENSE']},
     include_package_data=True,
     entry_points={
         'pytest11': ['django_queries = pytest_django_queries.plugin'],

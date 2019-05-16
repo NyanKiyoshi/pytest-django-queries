@@ -1,0 +1,55 @@
+<!doctype HTML>
+<html lang="en_US">
+    <head>
+        <title>Results</title>
+        <link rel="stylesheet"
+              href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+              integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+              crossorigin="anonymous" />
+        <style>
+            tbody tr > td:last-child {
+                width: 10rem
+            }
+        </style>
+    </head>
+
+    <body class="container-fluid">
+        <h1 class="text-center mt-5 mb-5">Benchmark Results</h1>
+
+        {% for module_name, module_data in data %}
+            <section>
+                <h2 class="text-capitalize">{{ humanize(module_name) }}</h2>
+
+                <table class="table table-bordered mb-5">
+                    <thead>
+                        <tr>
+                            <th>Benchmark name</th>
+                            <th>Query count</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for test_entry in module_data %}
+                            <tr>
+                                <td class="text-capitalize">
+                                    <code>{{ humanize(test_entry.test_name) }}</code>
+                                </td>
+                                <td>
+                                    <strong>{{ test_entry['query-count'] }}</strong>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="2">
+                                    <p>No data.</p>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        {% else %}
+            <p>No data.</p>
+        {% endfor %}
+    </body>
+</html>
