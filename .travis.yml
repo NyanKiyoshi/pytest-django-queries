@@ -20,6 +20,7 @@ env:
   - DJANGO="==2.1.*"
   - DJANGO="==2.2.*"
   - DJANGO="master"
+  - TEST_PYPI="true"
 
 matrix:
   fast_finish: true
@@ -73,14 +74,28 @@ before_install:
 
 install:
   - >
-    [ "$DJANGO" == master ] \
-       && django=https://github.com/django/django/archive/master.tar.gz \
-       || django="django${DJANGO}"
+    if [ ! -z "$DJANGO" ]; then
+      [ "$DJANGO" == master ] \
+         && django=https://github.com/django/django/archive/master.tar.gz \
+         || django="django${DJANGO}"
+    fi
   - pip install tox-travis codecov coverage $django
-  - ./setup.py develop
-  - pip install -e .[dev]
+  - >
+    if [ -z "$TEST_PYPI" ]; then
+      ./setup.py develop \
+      && pip install -e .[dev]
+    elif [ ! -z "$TRAVIS_TAG" ]; then
+      pip install -r requirements_dev.txt
+      pip install pytest-django-queries --pre
+    fi
+
 
 script:
-  - coverage run --source pytest_django_queries -m pytest
+  - >
+    if [ -z "$TEST_PYPI" ]; then
+      coverage run --source pytest_django_queries -m pytest
+    elif [ ! -z "$TRAVIS_TAG" ]; then
+      pytest
+    fi
 
 after_success: codecov
