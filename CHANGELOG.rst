@@ -1,3 +1,13 @@
+v1.0.0a2 - May 17th 2019
+++++++++++++++++++++++++
+
+- The requirements that could generate any diverging results between installation have now been freeze.
+- A "Read The Docs" documentation has been made and published.
+- Guides on how to release and contribute have been added.
+- The HTML template has been moved to its own file under the package directory as ``templates/default_bootstrap.jinja2``.
+- The Cli commands are now taking optionally the report path file, so it can now be omitted.
+
+
 v1.0.0a1 - May 13th 2019
 ++++++++++++++++++++++++
 
