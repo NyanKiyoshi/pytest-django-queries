@@ -6,3 +6,4 @@ django   ; python_version >= '3.0'
 Click
 beautifultable==0.7.0
 jinja2
+colorama
