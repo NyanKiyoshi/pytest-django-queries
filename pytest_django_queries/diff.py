@@ -69,7 +69,6 @@ class SingleEntryComparison(object):
 
         self.left = left
         self.right = right
-        self.diff = None
 
     def _diff_from_newest(self):
         """
@@ -99,10 +98,11 @@ class SingleEntryComparison(object):
     def right_count(self):
         return str(self.right.query_count) if self.right else _NA_CHAR
 
-    def to_string(self, lengths):
-        if self.diff is None:
-            self.diff = self._diff_from_newest()
+    @property
+    def diff(self):
+        return self._diff_from_newest()
 
+    def to_string(self, lengths):
         return entry_row(self, lengths=lengths)
 
 
@@ -161,13 +161,16 @@ class DiffGenerator(object):
         self._map_side(self.entries_left, 'left')
         self._map_side(self.entries_right, 'right')
 
-    def iter_module(self, module_entries):
+    def _iter_module(self, module_entries):
         yield self.header_rows
-        for test_comparison in module_entries.values():  # type: SingleEntryComparison
+        for _, test_comparison in sorted(module_entries.items()):  # type: SingleEntryComparison
             yield test_comparison.to_string(lengths=self.longest_props)
 
-    def __iter__(self):
-        for module_name, module_entries in self._mapping.items():
+    def _iter_modules(self):
+        for module_name, module_entries in sorted(self._mapping.items()):
             yield (
                 format_underscore_name_to_human(module_name),
-                self.iter_module(module_entries))
+                self._iter_module(module_entries))
+
+    def __iter__(self):
+        return self._iter_modules()

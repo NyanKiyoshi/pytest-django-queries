@@ -8,7 +8,8 @@ from jinja2 import exceptions as jinja_exceptions
 
 from pytest_django_queries.diff import DiffGenerator
 from pytest_django_queries.entry import flatten_entries
-from pytest_django_queries.plugin import DEFAULT_RESULT_FILENAME
+from pytest_django_queries.plugin import (
+    DEFAULT_RESULT_FILENAME, DEFAULT_OLD_RESULT_FILENAME)
 from pytest_django_queries.tables import print_entries, print_entries_as_html
 
 HERE = dirname(__file__)
@@ -73,7 +74,7 @@ def html(input_file, template):
 
 @main.command()
 @click.argument(
-    'left_file', type=JsonFileParamType('r'))
+    'left_file', type=JsonFileParamType('r'), default=DEFAULT_OLD_RESULT_FILENAME)
 @click.argument(
     'right_file', type=JsonFileParamType('r'), default=DEFAULT_RESULT_FILENAME)
 def diff(left_file, right_file):
@@ -91,18 +92,6 @@ def diff(left_file, right_file):
         for line in lines:
             fg_color = DIFF_TERM_COLOR.get(line[0], DEFAULT_TERM_DIFF_COLOR)
             click.secho(line, fg=fg_color)
-
-
-@main.command()
-@click.argument(
-    'left_file', type=JsonFileParamType('r'))
-@click.argument(
-    'right_file', type=JsonFileParamType('r'), default=DEFAULT_RESULT_FILENAME)
-def ediff(left_file, right_file):
-    """Render the diff as HTML instead of a diff table."""
-    left = flatten_entries(left_file)
-    right = flatten_entries(right_file)
-    raise NotImplementedError
 
 
 if __name__ == '__main__':
