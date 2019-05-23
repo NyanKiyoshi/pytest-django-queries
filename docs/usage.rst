@@ -39,3 +39,17 @@ The SHOW Command
     View a given rapport.
 
     Options: none
+
+
+The DIFF Command
+++++++++++++++++
+
+.. code-block:: text
+
+    Usage: django-queries diff [OPTIONS] [LEFT_FILE] [RIGHT_FILE]
+
+    Render the diff as a console table with colors.
+
+    Options: none
+
+:ref:`More details on how to use the diff command properly. <diff_usage>`
