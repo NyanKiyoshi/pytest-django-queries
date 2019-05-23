@@ -56,7 +56,7 @@ class DiffChars(object):
 
 
 class SingleEntryComparison(object):
-    __slots__ = ["left", "right", "diff"]
+    __slots__ = ["left", "right"]
 
     def __init__(self, left=None, right=None):
         """
