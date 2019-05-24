@@ -53,9 +53,15 @@ Quick Start
         | module3 |                         |
         +---------+-------------------------+
 
-4. Or for a nicer presentation, use ``django-queries html > results.txt`` to export the results as HTML. See `this example <./html_export_results.html>`_ for a demo!
+4. Or for a nicer presentation, use ``django-queries html > results.html`` to export the results as HTML. See `this example <./html_export_results.html>`_ for a demo!
 
     .. image:: _static/html_export_results.png
+        :width: 500 px
+        :align: center
+
+5. By running it twice with the option described :ref:`here <diff_usage>` and by running ``django-queries diff`` you will get something like this:
+
+    .. image:: _static/diff_results.png
         :width: 500 px
         :align: center
 
@@ -76,6 +82,7 @@ More Topics
 .. toctree::
     :maxdepth: 2
 
+    diff
     customize
     usage
     contributing
