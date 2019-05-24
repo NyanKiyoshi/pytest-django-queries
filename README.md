@@ -15,13 +15,13 @@
     <a href='https://pypi.python.org/pypi/pytest-django-queries'>
       <img src='https://img.shields.io/pypi/v/pytest-django-queries.svg' alt='Version' />
     </a>
-    <a href="https://pypi.org/project/pytest-django-queries/1.0.0a2/">
-      <img src="https://img.shields.io/badge/pypi%20unstable-v1.0.0a2-FF0000.svg" alt="Latest Unstable on pypi">
+    <a href="https://pypi.org/project/pytest-django-queries/1.0.0b1/">
+      <img src="https://img.shields.io/badge/pypi%20unstable-v1.0.0b1-FF0000.svg" alt="Latest Unstable on pypi">
     </a>
   </p>
   <p>
-    <a href='https://github.com/NyanKiyoshi/pytest-django-queries/compare/v1.0.0a2...master'>
-      <img src='https://img.shields.io/github/commits-since/NyanKiyoshi/pytest-django-queries/v1.0.0a2.svg' alt='Commits since latest release' />
+    <a href='https://github.com/NyanKiyoshi/pytest-django-queries/compare/v1.0.0b1...master'>
+      <img src='https://img.shields.io/github/commits-since/NyanKiyoshi/pytest-django-queries/v1.0.0b1.svg' alt='Commits since latest release' />
     </a>
     <a href='https://pypi.python.org/pypi/pytest-django-queries'>
       <img src='https://img.shields.io/pypi/pyversions/pytest-django-queries.svg' alt='Supported versions' />

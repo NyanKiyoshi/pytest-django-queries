@@ -1,3 +1,8 @@
+v1.0.0b1 - May 24th 2019
+++++++++++++++++++++++++
+- Implement a ``diff`` command for comparing results.
+
+
 v1.0.0a2 - May 17th 2019
 ++++++++++++++++++++++++
 
