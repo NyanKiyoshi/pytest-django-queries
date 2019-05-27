@@ -1,28 +1,29 @@
 # coding=utf-8
 from collections import namedtuple
+
 from pytest_django_queries.entry import Entry
 from pytest_django_queries.filters import format_underscore_name_to_human
 
-_ROW_FIELD = namedtuple('_RowField', ('comp_field', 'align_char', 'length_field'))
+_ROW_FIELD = namedtuple("_RowField", ("comp_field", "align_char", "length_field"))
 _ROW_FIELDS = (
-    _ROW_FIELD('test_name', '<', 'test_name'),
-    _ROW_FIELD('left_count', '>', 'query_count'),
-    _ROW_FIELD('right_count', '>', 'query_count'),
+    _ROW_FIELD("test_name", "<", "test_name"),
+    _ROW_FIELD("left_count", ">", "query_count"),
+    _ROW_FIELD("right_count", ">", "query_count"),
 )
-_ROW_PREFIX = '  '
-_NA_CHAR = '-'
+_ROW_PREFIX = "  "
+_NA_CHAR = "-"
 
 
 def entry_row(entry_comp, lengths):
     cols = []
 
     for field, align, length_key in _ROW_FIELDS:
-        fmt = '{cmp.%s: %s{lengths[%s]}}' % (field, align, length_key)
+        fmt = "{cmp.%s: %s{lengths[%s]}}" % (field, align, length_key)
         cols.append(fmt.format(cmp=entry_comp, lengths=lengths))
 
-    return '%(diff_char)s %(results)s' % ({
-        'diff_char': entry_comp.diff,
-        'results': '\t'.join(cols)})
+    return "%(diff_char)s %(results)s" % (
+        {"diff_char": entry_comp.diff, "results": "\t".join(cols)}
+    )
 
 
 def get_header_row(lengths):
@@ -31,20 +32,20 @@ def get_header_row(lengths):
 
     for field, _, length_key in _ROW_FIELDS:
         length = lengths[length_key]
-        sep_row.append('%s' % ('-' * length))
-        head_row.append('{field: <{length}}'.format(
-            field=field.replace('_', ' '), length=length))
+        sep_row.append("%s" % ("-" * length))
+        head_row.append(
+            "{field: <{length}}".format(field=field.replace("_", " "), length=length)
+        )
 
-    return '%(prefix)s%(head)s\n%(prefix)s%(sep)s' % ({
-        'prefix': _ROW_PREFIX,
-        'head': '\t'.join(head_row),
-        'sep': '\t'.join(sep_row)})
+    return "%(prefix)s%(head)s\n%(prefix)s%(sep)s" % (
+        {"prefix": _ROW_PREFIX, "head": "\t".join(head_row), "sep": "\t".join(sep_row)}
+    )
 
 
 class DiffChars(object):
-    NEGATIVE = '-'
-    NEUTRAL = ' '
-    POSITIVE = '+'
+    NEGATIVE = "-"
+    NEUTRAL = " "
+    POSITIVE = "+"
 
     @classmethod
     def convert(cls, diff):
@@ -122,7 +123,7 @@ class DiffGenerator(object):
 
         self._mapping = {}
         self._generate_mapping()
-        self.longest_props = self._get_longest_per_prop({'query_count', 'test_name'})
+        self.longest_props = self._get_longest_per_prop({"query_count", "test_name"})
         self.header_rows = get_header_row(lengths=self.longest_props)
 
     def _get_longest_per_prop(self, props):
@@ -134,7 +135,9 @@ class DiffGenerator(object):
 
         longest = {prop: 0 for prop in props}
         entries = (
-            self.entries_left + self.entries_right + [field for field, _, _ in _ROW_FIELDS]
+            self.entries_left
+            + self.entries_right
+            + [field for field, _, _ in _ROW_FIELDS]
         )
 
         for entry in entries:
@@ -158,19 +161,22 @@ class DiffGenerator(object):
             setattr(module_map[entry.test_name], side_name, entry)
 
     def _generate_mapping(self):
-        self._map_side(self.entries_left, 'left')
-        self._map_side(self.entries_right, 'right')
+        self._map_side(self.entries_left, "left")
+        self._map_side(self.entries_right, "right")
 
     def _iter_module(self, module_entries):
         yield self.header_rows
-        for _, test_comparison in sorted(module_entries.items()):  # type: SingleEntryComparison
+        for _, test_comparison in sorted(
+            module_entries.items()
+        ):  # type: SingleEntryComparison
             yield test_comparison.to_string(lengths=self.longest_props)
 
     def _iter_modules(self):
         for module_name, module_entries in sorted(self._mapping.items()):
             yield (
                 format_underscore_name_to_human(module_name),
-                self._iter_module(module_entries))
+                self._iter_module(module_entries),
+            )
 
     def __iter__(self):
         return self._iter_modules()

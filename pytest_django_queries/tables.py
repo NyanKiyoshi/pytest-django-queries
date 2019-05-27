@@ -7,18 +7,18 @@ from pytest_django_queries.filters import format_underscore_name_to_human
 
 def print_entries(data):
     table = BeautifulTable()
-    table.column_headers = ['Module', 'Tests']
+    table.column_headers = ["Module", "Tests"]
     for module_name, module_entries in iter_entries(data):
         subtable = BeautifulTable()
         subtable.column_headers = [field for _, field in Entry.FIELDS]
         for entry in module_entries:
-            subtable.append_row([
-                getattr(entry, field) for field, _ in Entry.FIELDS])
+            subtable.append_row([getattr(entry, field) for field, _ in Entry.FIELDS])
         table.append_row([module_name, subtable])
     click.echo(table)
 
 
 def print_entries_as_html(data, template):
     html_content = template.render(
-        data=iter_entries(data), humanize=format_underscore_name_to_human)
+        data=iter_entries(data), humanize=format_underscore_name_to_human
+    )
     click.echo(html_content, nl=False)
