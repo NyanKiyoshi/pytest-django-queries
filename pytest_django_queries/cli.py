@@ -12,13 +12,19 @@ from pytest_django_queries.plugin import (
     DEFAULT_OLD_RESULT_FILENAME,
     DEFAULT_RESULT_FILENAME,
 )
-from pytest_django_queries.tables import print_entries, print_entries_as_html
+from pytest_django_queries.tables import entries_to_html, print_entries
 
 HERE = dirname(__file__)
 DEFAULT_TEMPLATE_PATH = abspath(pathjoin(HERE, "templates", "default_bootstrap.jinja2"))
+DEFAULT_HTML_SAVE_PATH = "django-queries-results.html"
 
 DIFF_TERM_COLOR = {"-": "red", "+": "green"}
 DEFAULT_TERM_DIFF_COLOR = None
+
+
+def _write_html_to_file(content, path):
+    with open(path, "w") as fp:
+        fp.write(content)
 
 
 class JsonFileParamType(click.File):
@@ -41,7 +47,7 @@ class Jinja2TemplateFile(click.File):
     def convert(self, value, param, ctx):
         fp = super(Jinja2TemplateFile, self).convert(value, param, ctx)
         try:
-            return Template(fp.read())
+            return Template(fp.read(), trim_blocks=True)
         except jinja_exceptions.TemplateError as e:
             self.fail(
                 "The file is not a valid jinja2 template: %s" % str(e), param, ctx
@@ -66,10 +72,20 @@ def show(input_file):
 @click.argument(
     "input_file", type=JsonFileParamType("r"), default=DEFAULT_RESULT_FILENAME
 )
+@click.option("-o", "--output", type=str, default=DEFAULT_HTML_SAVE_PATH)
 @click.option("--template", type=Jinja2TemplateFile("r"), default=DEFAULT_TEMPLATE_PATH)
-def html(input_file, template):
-    """Render the results as HTML instead of a raw table."""
-    return print_entries_as_html(input_file, template)
+def html(input_file, output, template):
+    """
+    Render the results as HTML instead of a raw table.
+
+    Note: you can pass a dash (-) as the path to print the HTML content to stdout."""
+    html_content = entries_to_html(input_file, template)
+
+    if output == "-":
+        click.echo(html_content, nl=False)
+        return
+
+    _write_html_to_file(html_content, output)
 
 
 @main.command()

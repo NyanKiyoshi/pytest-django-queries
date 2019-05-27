@@ -1,3 +1,30 @@
+Plugin Usage
+============
+
+The plugin supports some optional parameters that are defined below.
+
+Customizing the Save Path
++++++++++++++++++++++++++
+
+.. code-block:: text
+
+    --django-db-bench=PATH
+    Output file for storing the results. Default: .pytest-queries
+
+
+Backing Up Results
+++++++++++++++++++
+
+You can pass the ``--django-backup-queries`` parameter to backup previous results to `.pytest-django.old``.
+
+Or pass a custom path.
+
+.. code-block:: text
+
+    --django-backup-queries=[PATH]
+    Whether the old results should be backed up or not before overriding.
+
+
 CLI Usage
 =========
 
@@ -20,11 +47,14 @@ The HTML Command
 
 .. code-block:: text
 
-    Usage: django-queries html [OPTIONS] [INPUT_FILE]
+    Usage: django-queries html [OPTIONS] [INPUT_FILE] [-o OUTPUT FILE]
 
     Render the results as HTML instead of a raw table.
 
     Options:
+        -o                  The path to save the HTML file into
+                            django-queries.html by default.
+                            You can pass a dash (-) to write to stdout as well.
         --template INTEGER
         --help              Show this message and exit.
 
