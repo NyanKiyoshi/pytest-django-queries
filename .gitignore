@@ -2,6 +2,7 @@
 venv/
 *.pyc
 *.egg-info/
+*wheel*
 .pytest*
 .coverage
 *cov/
