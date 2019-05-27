@@ -1,4 +1,6 @@
 import json
+import shutil
+from os.path import isfile
 
 import pytest
 from django.test.utils import CaptureQueriesContext
@@ -17,9 +19,21 @@ def _get_session(request):
     return request.config.pytest_django_queries_session
 
 
+def _create_backup(save_path, backup_path):
+    shutil.copy(save_path, backup_path)
+
+
 class _Session(object):
-    def __init__(self, save_path):
+    def __init__(self, save_path, backup_path):
+        """
+        :param save_path:
+        :type save_path: str
+
+        :param backup_path:
+        :type backup_path: bool
+        """
         self.save_path = save_path
+        self.backup_path = backup_path
         self._data = {}
 
     def add_entry(self, module_name, test_name, query_count):
@@ -27,6 +41,9 @@ class _Session(object):
         module_data[test_name] = {"query-count": query_count}
 
     def save_json(self):
+        if self.backup_path and isfile(self.save_path):
+            _create_backup(self.save_path, self.backup_path)
+
         with open(self.save_path, "w") as fp:
             json.dump(self._data, fp, indent=2)
 
@@ -49,6 +66,15 @@ def pytest_addoption(parser):
         metavar="PATH",
         help="Output file for storing the results. Default: .pytest-queries",
     )
+    group.addoption(
+        "--django-backup-queries",
+        dest="queries_backup_results",
+        action="store",
+        default=None,
+        metavar="PATH",
+        help="Whether the old results should be backed up or not before overriding",
+        nargs="?",
+    )
 
 
 @pytest.mark.tryfirst
@@ -63,10 +89,21 @@ def pytest_configure(config):
 
 @pytest.mark.tryfirst
 def pytest_load_initial_conftests(early_config, parser, args):
-    _set_session(
-        early_config,
-        _Session(early_config.known_args_namespace.queries_results_save_path),
-    )
+    """
+    :param early_config:
+    :param parser:
+    :param args:
+    :type args: tuple|list
+    :return:
+    """
+    save_path = early_config.known_args_namespace.queries_results_save_path
+    backup_path = early_config.known_args_namespace.queries_backup_results
+
+    # Set default value if the flag was provided without value in arguments
+    if backup_path is None and "--django-backup-queries" in args:
+        backup_path = DEFAULT_OLD_RESULT_FILENAME
+
+    _set_session(early_config, _Session(save_path, backup_path))
 
 
 @pytest.hookimpl(hookwrapper=True)

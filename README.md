@@ -61,6 +61,8 @@ You will find the [full documentation here](https://pytest-django-queries.readth
 
 ## Integrating with GitHub
 
+TBA.
+
 ## Testing locally
 Simply install `pytest-django-queries` through pip and run your
 tests using `pytest`. A report should have been generated in your
@@ -105,6 +107,13 @@ django-queries html > results.html
 <!-- todo: add example page link -->
 
 ## Comparing results
+
+When running pytest, pass the `--django-backup-queries` (can take a path, optionally)
+then you can run `django-queries diff` to generate results looking like this:
+
+<a href='./docs/_static/diff_results.png'>
+  <img src='./docs/_static/diff_results.png' alt='screenshot' width='500px' />
+</a>
 
 ## Development
 First of all, clone the project locally. Then, install it using the below command.
