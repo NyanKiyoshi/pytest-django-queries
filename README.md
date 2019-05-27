@@ -62,7 +62,7 @@ You will find the [full documentation here](https://pytest-django-queries.readth
 ## Integrating with GitHub
 
 ## Testing locally
-Simply install `pytest-django-queries` through pip and run your 
+Simply install `pytest-django-queries` through pip and run your
 tests using `pytest`. A report should have been generated in your
 current working directory in a file called with `.pytest-queries`.
 
@@ -113,7 +113,7 @@ First of all, clone the project locally. Then, install it using the below comman
 ./setup.py develop
 ```
 
-After that, you need to install the development requirements. For that, 
+After that, you need to install the development requirements. For that,
 run the below command.
 
 ```shell

@@ -4,6 +4,7 @@
 1. Always put and commit your change sets into a new and meaningful branch in your fork.
 1. Update the changelog file with the changes you made. Otherwise,
    unless your contribution is minor, it won’t get accepted.
+1. You can run `pre-commit` inside your changes to check if they respect our code style.
 1. Your contributions will get reviewed and will receive comments, remarks and suggestion.
    Please respect them, discuss them and be happy! The open source is great!
 1. It may take time, days or even weeks before you get a review from us. But don’t worry,

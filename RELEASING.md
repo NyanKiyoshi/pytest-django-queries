@@ -10,20 +10,20 @@ want to do a pre-release, you will choose between:
         X.YbN   # Beta release
         X.YrcN  # Release Candidate
         X.Y     # Final release
-    
+
     Post releases:
         X.Y.postN     # Post-release
         X.YaN.postM   # Post-release of an alpha release
         X.YbN.postM   # Post-release of a beta release
         X.YrcN.postM  # Post-release of a release candidate
-        
+
     Development releases:
         X.Y.devN         # Developmental release
         X.YaN.devM       # Developmental release of an alpha release
         X.YbN.devM       # Developmental release of a beta release
         X.YrcN.devM      # Developmental release of a release candidate
         X.Y.postN.devM   # Developmental release of a post-release
-        
+
 ### The Release Version Number
 1. If your changes are fixing a big and changing in no way the behavior of any component,
 you will bump the patch version number (`X.Y.PatchNumber`). This should only be used
@@ -39,7 +39,7 @@ and properly planned for the big next release that introduce a given load of bre
 addition of in the changelog.
 
 ### The Release Number Checklist
-        
+
 - [ ] Choose a release type
 - [ ] Bump the major, minor or patch version number
 
@@ -53,4 +53,3 @@ addition of in the changelog.
 - [ ] Merge the branch
 - [ ] Create a tag through GitHub or `git tag vX.Y.Z && git push --tag`; the tag should be `vX.Y.Z`
 - [ ] Create a release and put the change logs and any information that may be useful.
-

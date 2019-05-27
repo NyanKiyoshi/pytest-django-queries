@@ -1,8 +1,6 @@
 import pytest
 
-from pytest_django_queries.entry import flatten_entries
-
-pytest_plugins = 'pytester'
+pytest_plugins = "pytester"
 
 
 @pytest.fixture

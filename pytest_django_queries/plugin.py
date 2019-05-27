@@ -4,9 +4,9 @@ import pytest
 from django.test.utils import CaptureQueriesContext
 
 # Defines the plugin marker name
-PYTEST_QUERY_COUNT_MARKER = 'count_queries'
-DEFAULT_RESULT_FILENAME = '.pytest-queries'
-DEFAULT_OLD_RESULT_FILENAME = '.pytest-queries.old'
+PYTEST_QUERY_COUNT_MARKER = "count_queries"
+DEFAULT_RESULT_FILENAME = ".pytest-queries"
+DEFAULT_OLD_RESULT_FILENAME = ".pytest-queries.old"
 
 
 def _set_session(config, new_session):
@@ -24,10 +24,10 @@ class _Session(object):
 
     def add_entry(self, module_name, test_name, query_count):
         module_data = self._data.setdefault(module_name, {})
-        module_data[test_name] = {'query-count': query_count}
+        module_data[test_name] = {"query-count": query_count}
 
     def save_json(self):
-        with open(self.save_path, 'w') as fp:
+        with open(self.save_path, "w") as fp:
             json.dump(self._data, fp, indent=2)
 
     def finish(self):
@@ -40,30 +40,33 @@ class _Session(object):
 
 
 def pytest_addoption(parser):
-    group = parser.getgroup('django-queries')
+    group = parser.getgroup("django-queries")
     group.addoption(
-        '--django-db-bench',
-        dest='queries_results_save_path',
-        action='store',
+        "--django-db-bench",
+        dest="queries_results_save_path",
+        action="store",
         default=DEFAULT_RESULT_FILENAME,
-        metavar='PATH',
-        help='Output file for storing the results. Default: .pytest-queries')
+        metavar="PATH",
+        help="Output file for storing the results. Default: .pytest-queries",
+    )
 
 
 @pytest.mark.tryfirst
 def pytest_configure(config):
     """Append the plugin markers to the pytest configuration."""
     config_line = (
-       '%s: Mark the test as to have their queries counted.'
-       '' % PYTEST_QUERY_COUNT_MARKER)
-    config.addinivalue_line('markers', config_line)
+        "%s: Mark the test as to have their queries counted."
+        "" % PYTEST_QUERY_COUNT_MARKER
+    )
+    config.addinivalue_line("markers", config_line)
 
 
 @pytest.mark.tryfirst
 def pytest_load_initial_conftests(early_config, parser, args):
     _set_session(
         early_config,
-        _Session(early_config.known_args_namespace.queries_results_save_path))
+        _Session(early_config.known_args_namespace.queries_results_save_path),
+    )
 
 
 @pytest.hookimpl(hookwrapper=True)
@@ -78,7 +81,7 @@ def _pytest_query_marker(request):
     marked with 'count_queries'."""
     marker = request.node.get_closest_marker(PYTEST_QUERY_COUNT_MARKER)
     if marker:
-        request.getfixturevalue('count_queries')
+        request.getfixturevalue("count_queries")
 
 
 @pytest.fixture
