@@ -13,7 +13,8 @@ cache:
   pip: true
   directories:
     - node_modules
-    - $HOME/.cache/pip
+      - $HOME/.cache/pip
+      - $HOME/.cache/pre-commit
 
 env:
   - DJANGO="==1.11.*"
@@ -50,6 +51,11 @@ matrix:
       env:
         - DJANGO="master"
 
+    - dist: xenial
+      python: "3.6"
+      env:
+        - TEST_PRECOMMIT="true"
+
   exclude:
     - python: "2.7"
       env: DJANGO="==2.1.*"
@@ -74,28 +80,38 @@ before_install:
 
 install:
   - >
-    if [ ! -z "$DJANGO" ]; then
+    if [ -n "$DJANGO" ]; then
       [ "$DJANGO" == master ] \
          && django=https://github.com/django/django/archive/master.tar.gz \
          || django="django${DJANGO}"
     fi
   - pip install tox-travis codecov coverage $django
   - >
-    if [ -z "$TEST_PYPI" ]; then
+    if [ -n "$TEST_PYPI" ]; then
+      if [ -n "$TRAVIS_TAG" ]; then
+        pip install -r requirements_dev.txt
+        pip install pytest-django-queries --pre
+      fi
+    elif [ -n "$TEST_PRECOMMIT" ]; then
+      pip install pre-commit
+    else
       ./setup.py develop \
       && pip install -e .[dev]
-    elif [ ! -z "$TRAVIS_TAG" ]; then
-      pip install -r requirements_dev.txt
-      pip install pytest-django-queries --pre
     fi
 
 
 script:
   - >
-    if [ -z "$TEST_PYPI" ]; then
+    if [ -n "$TEST_PYPI" ]; then
+      if [ -n "$TRAVIS_TAG" ]; then
+        pytest
+      else
+        echo Nothing to do >&2
+      fi
+    elif [ -n "$TEST_PRECOMMIT" ]; then
+      pre-commit run --all-files
+    else
       coverage run --source pytest_django_queries -m pytest
-    elif [ ! -z "$TRAVIS_TAG" ]; then
-      pytest
     fi
 
 after_success: codecov
