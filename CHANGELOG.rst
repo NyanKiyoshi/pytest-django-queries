@@ -1,5 +1,14 @@
+v1.0.0rc1 - May 24th 2019
+++++++++++++++++++++++++
+
+- Users can now backup/copy their previous results using the ``--django-backup-queries`` parameter when running ``pytest``.
+- The HTML cli command now exports to ``django-queries-results.html`` by default instead of ``stdout``, instead, users have to run ``django-queries html -`` for the output to go in ``stdout``.
+- The code now enforces the Black code style and Flake 8 checks in addition to isort.
+
+
 v1.0.0b1 - May 24th 2019
 ++++++++++++++++++++++++
+
 - Implement a ``diff`` command for comparing results.
 
 
