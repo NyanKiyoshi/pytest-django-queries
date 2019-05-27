@@ -9,3 +9,4 @@ venv/
 dist/
 docs/_build/
 .DS*
+django-queries-results.html

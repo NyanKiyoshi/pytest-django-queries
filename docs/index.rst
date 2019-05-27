@@ -54,7 +54,7 @@ Quick Start
         | module3 |                         |
         +---------+-------------------------+
 
-5. Or for a nicer presentation, use ``django-queries html > results.html`` to export the results as HTML. See `this example <./html_export_results.html>`_ for a demo!
+5. Or for a nicer presentation, use ``django-queries html`` to export the results as HTML. See `this example <./html_export_results.html>`_ for a demo!
 
     .. image:: _static/html_export_results.png
         :width: 500 px

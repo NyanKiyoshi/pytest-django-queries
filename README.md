@@ -102,9 +102,10 @@ You will get something like this to represent the results:
 ## Exporting the results (HTML)
 For a nicer presentation, use the `html` command, to export the results as HTML.
 ```shell
-django-queries html > results.html
+django-queries html
 ```
-<!-- todo: add example page link -->
+
+It will generate something [like this](https://pytest-django-queries.readthedocs.io/en/latest/html_export_results.html).
 
 ## Comparing results
 

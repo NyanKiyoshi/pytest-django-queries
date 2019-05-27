@@ -17,8 +17,8 @@ def print_entries(data):
     click.echo(table)
 
 
-def print_entries_as_html(data, template):
+def entries_to_html(data, template):
     html_content = template.render(
         data=iter_entries(data), humanize=format_underscore_name_to_human
     )
-    click.echo(html_content, nl=False)
+    return html_content

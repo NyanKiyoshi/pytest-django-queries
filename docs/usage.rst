@@ -47,11 +47,14 @@ The HTML Command
 
 .. code-block:: text
 
-    Usage: django-queries html [OPTIONS] [INPUT_FILE]
+    Usage: django-queries html [OPTIONS] [INPUT_FILE] [-o OUTPUT FILE]
 
     Render the results as HTML instead of a raw table.
 
     Options:
+        -o                  The path to save the HTML file into
+                            django-queries.html by default.
+                            You can pass a dash (-) to write to stdout as well.
         --template INTEGER
         --help              Show this message and exit.
 

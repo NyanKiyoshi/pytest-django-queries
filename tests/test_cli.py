@@ -1,6 +1,7 @@
 import json
 from textwrap import dedent
 
+import mock
 import pytest
 from bs4 import BeautifulSoup
 from click.testing import CliRunner
@@ -99,7 +100,7 @@ def test_load_valid_json_file_shows_correct_data(testdir):
 def test_load_valid_json_file_shows_correct_html_data(testdir):
     testdir.makefile(".json", test_file=json.dumps(VALID_DATA))
     runner = CliRunner()
-    result = runner.invoke(cli.main, ["html", "test_file.json"])
+    result = runner.invoke(cli.main, ["html", "test_file.json", "-o", "-"])
     assert result.exit_code == 0, result.stdout
     soup = BeautifulSoup(result.stdout, "lxml")
     sections = soup.select("section")
@@ -130,7 +131,7 @@ def test_load_valid_json_without_data_is_empty_result(testdir, test_data):
     testdir.makefile(".json", test_file=json.dumps(test_data))
 
     runner = CliRunner()
-    result = runner.invoke(cli.main, ["html", "test_file.json"])
+    result = runner.invoke(cli.main, ["html", "test_file.json", "-o", "-"])
     assert result.exit_code == 0, result.stdout
 
     soup = BeautifulSoup(result.stdout, "lxml")
@@ -156,16 +157,53 @@ def test_load_valid_json_without_data_is_empty_result(testdir, test_data):
     assert received_text.get_text(strip=True) == "No data."
 
 
+def test_export_to_html_using_custom_path(testdir):
+    testdir.makefile(".json", test_file="{}")
+    results_path = testdir.tmpdir.join("results.html")
+
+    runner = CliRunner()
+    result = runner.invoke(
+        cli.main, ["html", "test_file.json", "-o", str(results_path)]
+    )
+    assert result.exit_code == 0, result.stdout
+    assert not result.stdout
+    assert results_path.check()
+
+
 def test_export_to_html_using_custom_template(testdir):
     testdir.makefile(".json", test_file="{}")
     testdir.makefile(".html", test_template='{{ "hello world" }}')
 
     runner = CliRunner()
     result = runner.invoke(
-        cli.main, ["html", "test_file.json", "--template", "test_template.html"]
+        cli.main,
+        ["html", "test_file.json", "-o", "-", "--template", "test_template.html"],
     )
     assert result.exit_code == 0, result.stdout
     assert result.stdout == "hello world"
+
+
+@pytest.mark.parametrize(
+    "additional_args, expected_save_path",
+    ((["-o", "/somewhere/html"], "/somewhere/html"), ([], cli.DEFAULT_HTML_SAVE_PATH)),
+)
+@mock.patch.object(cli, "entries_to_html")
+@mock.patch.object(cli, "_write_html_to_file")
+def test_export_to_html_into_file(
+    mocked_write, mocked_entries_to_html, testdir, additional_args, expected_save_path
+):
+    testdir.makefile(".json", test_file="{}")
+    runner = CliRunner()
+
+    mocked_entries_to_html.return_value = "hi!"
+
+    args = ["html", "test_file.json"] + additional_args
+    result = runner.invoke(cli.main, args)
+
+    assert result.exit_code == 0, result.stdout
+    assert not result.stdout
+
+    mocked_write.assert_called_once_with("hi!", expected_save_path)
 
 
 def test_export_to_html_using_invalid_custom_template_should_fail(testdir):
