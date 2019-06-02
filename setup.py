@@ -26,7 +26,7 @@ setup(
     author="NyanKiyoshi",
     author_email="hello@vanille.bid",
     url="https://github.com/NyanKiyoshi/pytest-django-queries/",
-    description="Generate performance rapports from your django database "
+    description="Generate performance reports from your django database "
     "performance tests.",
     long_description=long_description,
     long_description_content_type="text/markdown",
