@@ -22,7 +22,7 @@ Or pass a custom path.
 .. code-block:: text
 
     --django-backup-queries=[PATH]
-    Whether the old results should be backed up or not before overriding.
+      Whether the old results should be backed up or not before overriding.
 
 
 CLI Usage
@@ -52,11 +52,13 @@ The HTML Command
     Render the results as HTML instead of a raw table.
 
     Options:
-        -o                  The path to save the HTML file into
-                            django-queries.html by default.
-                            You can pass a dash (-) to write to stdout as well.
-        --template INTEGER
-        --help              Show this message and exit.
+        -o                      The path to save the HTML file into
+                                django-queries.html by default.
+                                You can pass a dash (-) to write to stdout as well.
+
+        --template JINJA2_FILE  Use a custom jinja2 template for rendering HTML results.
+
+        --help                  Show this message and exit.
 
 
 The SHOW Command

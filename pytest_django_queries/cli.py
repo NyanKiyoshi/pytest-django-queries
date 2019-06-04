@@ -27,11 +27,11 @@ def _write_html_to_file(content, path):
         fp.write(content)
 
 
-class JsonFileParamType(click.File):
-    name = "integer"
+class JsonReportFileParamType(click.File):
+    name = "report_file"
 
     def convert(self, value, param, ctx):
-        fp = super(JsonFileParamType, self).convert(value, param, ctx)
+        fp = super(JsonReportFileParamType, self).convert(value, param, ctx)
         try:
             loaded = json.load(fp)
             if type(loaded) is not dict:
@@ -42,7 +42,7 @@ class JsonFileParamType(click.File):
 
 
 class Jinja2TemplateFile(click.File):
-    name = "integer"
+    name = "jinja2_file"
 
     def convert(self, value, param, ctx):
         fp = super(Jinja2TemplateFile, self).convert(value, param, ctx)
@@ -61,7 +61,7 @@ def main():
 
 @main.command()
 @click.argument(
-    "input_file", type=JsonFileParamType("r"), default=DEFAULT_RESULT_FILENAME
+    "input_file", type=JsonReportFileParamType("r"), default=DEFAULT_RESULT_FILENAME
 )
 def show(input_file):
     """View a given rapport."""
@@ -70,10 +70,22 @@ def show(input_file):
 
 @main.command()
 @click.argument(
-    "input_file", type=JsonFileParamType("r"), default=DEFAULT_RESULT_FILENAME
+    "input_file", type=JsonReportFileParamType("r"), default=DEFAULT_RESULT_FILENAME
 )
-@click.option("-o", "--output", type=str, default=DEFAULT_HTML_SAVE_PATH)
-@click.option("--template", type=Jinja2TemplateFile("r"), default=DEFAULT_TEMPLATE_PATH)
+@click.option(
+    "-o",
+    "--output",
+    type=str,
+    default=DEFAULT_HTML_SAVE_PATH,
+    help="The path to save the HTML file into django-queries.html by default."
+    "You can pass a dash (-) to write to stdout as well.",
+)
+@click.option(
+    "--template",
+    type=Jinja2TemplateFile("r"),
+    default=DEFAULT_TEMPLATE_PATH,
+    help="Use a custom jinja2 template for rendering HTML results.",
+)
 def html(input_file, output, template):
     """
     Render the results as HTML instead of a raw table.
@@ -90,10 +102,10 @@ def html(input_file, output, template):
 
 @main.command()
 @click.argument(
-    "left_file", type=JsonFileParamType("r"), default=DEFAULT_OLD_RESULT_FILENAME
+    "left_file", type=JsonReportFileParamType("r"), default=DEFAULT_OLD_RESULT_FILENAME
 )
 @click.argument(
-    "right_file", type=JsonFileParamType("r"), default=DEFAULT_RESULT_FILENAME
+    "right_file", type=JsonReportFileParamType("r"), default=DEFAULT_RESULT_FILENAME
 )
 def diff(left_file, right_file):
     """Render the diff as a console table with colors."""
