@@ -78,16 +78,6 @@ def pytest_addoption(parser):
 
 
 @pytest.mark.tryfirst
-def pytest_configure(config):
-    """Append the plugin markers to the pytest configuration."""
-    config_line = (
-        "%s: Mark the test as to have their queries counted."
-        "" % PYTEST_QUERY_COUNT_MARKER
-    )
-    config.addinivalue_line("markers", config_line)
-
-
-@pytest.mark.tryfirst
 def pytest_load_initial_conftests(early_config, parser, args):
     """
     :param early_config:
@@ -96,6 +86,12 @@ def pytest_load_initial_conftests(early_config, parser, args):
     :type args: tuple|list
     :return:
     """
+    early_config.addinivalue_line(
+        "markers",
+        "%s: Mark the test as to have their database query counted."
+        "" % PYTEST_QUERY_COUNT_MARKER,
+    )
+
     save_path = early_config.known_args_namespace.queries_results_save_path
     backup_path = early_config.known_args_namespace.queries_backup_results
 

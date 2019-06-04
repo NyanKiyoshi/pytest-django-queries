@@ -188,7 +188,7 @@ def test_marker_message(testdir):
     result.stdout.fnmatch_lines(
         [
             "@pytest.mark.count_queries: "
-            "Mark the test as to have their queries counted."
+            "Mark the test as to have their database query counted."
         ]
     )
 
