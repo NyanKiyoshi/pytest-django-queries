@@ -148,8 +148,9 @@ It will generate something [like this](https://pytest-django-queries.readthedocs
 
 ## Comparing Results
 
-When running pytest, pass the `--django-backup-queries` (can take a path, optionally)
-then you can run `django-queries diff` to generate results looking like this:
+You can run `django-queries backup` (can take a path, optionally) after
+running your tests then rerun them. After that, you can run `django-queries diff`
+to generate results looking like this:
 
 <a href='./docs/_static/diff_results.png'>
   <img src='./docs/_static/diff_results.png' alt='screenshot' width='500px' />

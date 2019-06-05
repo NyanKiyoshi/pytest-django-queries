@@ -1,11 +1,12 @@
 import json
-import shutil
 from os.path import isfile
 
 import pytest
 from django.test.utils import CaptureQueriesContext
 
 # Defines the plugin marker name
+from pytest_django_queries.utils import create_backup
+
 PYTEST_QUERY_COUNT_MARKER = "count_queries"
 PYTEST_QUERY_COUNT_FIXTURE_NAME = "count_queries"
 DEFAULT_RESULT_FILENAME = ".pytest-queries"
@@ -18,10 +19,6 @@ def _set_session(config, new_session):
 
 def _get_session(request):
     return request.config.pytest_django_queries_session
-
-
-def _create_backup(save_path, backup_path):
-    shutil.copy(save_path, backup_path)
 
 
 class _Session(object):
@@ -43,7 +40,7 @@ class _Session(object):
 
     def save_json(self):
         if self.backup_path and isfile(self.save_path):
-            _create_backup(self.save_path, self.backup_path)
+            create_backup(self.save_path, self.backup_path)
 
         with open(self.save_path, "w") as fp:
             json.dump(self._data, fp, indent=2)

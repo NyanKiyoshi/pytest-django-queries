@@ -15,7 +15,9 @@ Customizing the Save Path
 Backing Up Results
 ++++++++++++++++++
 
-You can pass the ``--django-backup-queries`` parameter to backup previous results to `.pytest-django.old``.
+The easiest way is to run the ``django-queries backup`` command which will create a copy of the current results.
+
+Another way is by passing the ``--django-backup-queries`` parameter to backup previous results to `.pytest-django.old``.
 
 Or pass a custom path.
 

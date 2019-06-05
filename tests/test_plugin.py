@@ -210,7 +210,7 @@ def test_fixture_is_not_backing_up_if_not_asked_to(testdir):
     # and triggers a counting of the query number
     testdir.makepyfile(test_file=DUMMY_TEST_QUERY)
 
-    with mock.patch("pytest_django_queries.plugin._create_backup") as mocked_backup:
+    with mock.patch("pytest_django_queries.plugin.create_backup") as mocked_backup:
         results = testdir.runpytest("--django-db-bench", results_path)
         assert mocked_backup.call_count == 0
 
@@ -228,7 +228,7 @@ def test_fixture_is_backing_up_old_results_to_default_path_if_no_path_provided(t
     # and triggers a counting of the query number
     testdir.makepyfile(test_file=DUMMY_TEST_QUERY)
 
-    with mock.patch("pytest_django_queries.plugin._create_backup") as mocked_backup:
+    with mock.patch("pytest_django_queries.plugin.create_backup") as mocked_backup:
         from pytest_django_queries.plugin import DEFAULT_OLD_RESULT_FILENAME
 
         results = testdir.runpytest(

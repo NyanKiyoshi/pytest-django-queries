@@ -13,6 +13,7 @@ from pytest_django_queries.plugin import (
     DEFAULT_RESULT_FILENAME,
 )
 from pytest_django_queries.tables import entries_to_html, print_entries
+from pytest_django_queries.utils import create_backup
 
 HERE = dirname(__file__)
 DEFAULT_TEMPLATE_PATH = abspath(pathjoin(HERE, "templates", "default_bootstrap.jinja2"))
@@ -122,6 +123,14 @@ def diff(left_file, right_file):
         for line in lines:
             fg_color = DIFF_TERM_COLOR.get(line[0], DEFAULT_TERM_DIFF_COLOR)
             click.secho(line, fg=fg_color)
+
+
+@main.command()
+@click.argument("target_path", type=str, default=DEFAULT_OLD_RESULT_FILENAME)
+def backup(target_path):
+    source_path = DEFAULT_RESULT_FILENAME
+    click.echo("{0} -> {1}".format(source_path, target_path))
+    create_backup(source_path, target_path)
 
 
 if __name__ == "__main__":
