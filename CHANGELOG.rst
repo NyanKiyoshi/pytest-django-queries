@@ -1,5 +1,17 @@
+v1.0.0rc2 - June 5th 2019
++++++++++++++++++++++++++
+
+- Renamed the marker description to be more meaningful about was it does.
+- Fixed a typo in the readme file.
+- Added help texts for named parameters in the cli.
+- Fixed the wrong help text saying it is taking an integer when it actually expects a file path.
+- Users can now mark tests without having the ``count_queries`` fixture injected automatically if a custom order or manual usage is needed.
+- Added a better filtering of unwanted keywords in humanization of test names. It now handles test cases names inside modules (dotted import names).
+- Added a ``backup`` command to ``django-queries`` to make it easier of making a copy of the current results.
+
+
 v1.0.0rc1 - May 24th 2019
-++++++++++++++++++++++++
++++++++++++++++++++++++++
 
 - Users can now backup/copy their previous results using the ``--django-backup-queries`` parameter when running ``pytest``.
 - The HTML cli command now exports to ``django-queries-results.html`` by default instead of ``stdout``, instead, users have to run ``django-queries html -`` for the output to go in ``stdout``.
