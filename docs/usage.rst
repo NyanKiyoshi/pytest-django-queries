@@ -25,6 +25,12 @@ Or pass a custom path.
       Whether the old results should be backed up or not before overriding.
 
 
+Running Tests Separately
+++++++++++++++++++++++++
+
+To only run the ``count_queries`` marked tests and nothing else, you can run ``pytest -v -m count_queries``.
+
+
 CLI Usage
 =========
 
