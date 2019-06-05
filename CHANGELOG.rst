@@ -2,7 +2,7 @@ v1.0.0rc2 - June 5th 2019
 +++++++++++++++++++++++++
 
 - Renamed the marker description to be more meaningful about was it does.
-- Fixed a typo in the readme file.
+- Fixed a typo in the project description (PyPi and GitHub).
 - Added help texts for named parameters in the cli.
 - Fixed the wrong help text saying it is taking an integer when it actually expects a file path.
 - Users can now mark tests without having the ``count_queries`` fixture injected automatically if a custom order or manual usage is needed.
@@ -48,6 +48,7 @@ v1.0.0.dev1 - May 12th 2019
 +++++++++++++++++++++++++++
 
 - Introduced the cli (#3) with two commands:
+
   - ``show`` that process a given benchmark result to render a summary table
   - ``html`` render the table in HTML, the template can be customized using ``--template <path>``
 
