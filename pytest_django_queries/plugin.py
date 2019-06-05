@@ -7,6 +7,7 @@ from django.test.utils import CaptureQueriesContext
 
 # Defines the plugin marker name
 PYTEST_QUERY_COUNT_MARKER = "count_queries"
+PYTEST_QUERY_COUNT_FIXTURE_NAME = "count_queries"
 DEFAULT_RESULT_FILENAME = ".pytest-queries"
 DEFAULT_OLD_RESULT_FILENAME = ".pytest-queries.old"
 
@@ -108,13 +109,26 @@ def pytest_sessionfinish(session, exitstatus):
     yield
 
 
+def _process_query_count_marker(request, *_args, **kwargs):
+    autouse = kwargs.setdefault("autouse", True)
+    if autouse:
+        request.getfixturevalue(PYTEST_QUERY_COUNT_FIXTURE_NAME)
+
+
 @pytest.fixture(autouse=True)
 def _pytest_query_marker(request):
     """Use the fixture to count the queries on the current node if it's
-    marked with 'count_queries'."""
+    marked with 'count_queries'.
+
+    Optional keyword-arguments:
+        - autouse (bool, default: True)
+          Whether the fixture should be used automatically.
+          This might be useful if you are executing fixtures
+          that are making queries and still want to mark the test
+          but place the fixture manually."""
     marker = request.node.get_closest_marker(PYTEST_QUERY_COUNT_MARKER)
     if marker:
-        request.getfixturevalue("count_queries")
+        _process_query_count_marker(request, *marker.args, **marker.kwargs)
 
 
 @pytest.fixture
