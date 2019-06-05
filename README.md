@@ -59,11 +59,50 @@ You will find the [full documentation here](https://pytest-django-queries.readth
 
 <!-- TODO: insert a graphic here to explain how it works -->
 
+## Recommendation when Using Fixtures
+You might end up in the case where you want to add fixtures that are generating queries
+that you don't want to be counted in the results–or simply, you want to use the
+`pytest-django` plugin alongside of `pytest-django-queries`, which will generate
+unwanted queries in your results.
+
+For that, you will want to put the `count_queries` fixture as the last fixture to execute.
+
+But at the same time, you might want to use the the power of pytest markers, to separate
+the queries counting tests from other tests. In that case, you might want to do something
+like this to tell the marker to not automatically inject the `count_queries` fixture into
+your test:
+
+```python
+import pytest
+
+
+@pytest.mark.count_queries(autouse=False)
+def test_retrieve_main_menu(fixture_making_queries, count_queries):
+    pass
+```
+
+Notice the usage of the keyword argument `autouse=False` and the `count_queries` fixture
+being placed last.
+
+## Using pytest-django alongside of pytest-django-queries
+We recommend you to do the following when using `pytest-django`:
+
+```python
+import pytest
+
+
+@pytest.mark.django_db
+@pytest.mark.count_queries(autouse=False)
+def test_retrieve_main_menu(any_fixture, other_fixture, count_queries):
+    pass
+```
+
+
 ## Integrating with GitHub
 
 TBA.
 
-## Testing locally
+## Testing Locally
 Simply install `pytest-django-queries` through pip and run your
 tests using `pytest`. A report should have been generated in your
 current working directory in a file called with `.pytest-queries`.
@@ -99,7 +138,7 @@ You will get something like this to represent the results:
 +---------+-------------------------+
 ```
 
-## Exporting the results (HTML)
+## Exporting the Results (HTML)
 For a nicer presentation, use the `html` command, to export the results as HTML.
 ```shell
 django-queries html
@@ -107,10 +146,11 @@ django-queries html
 
 It will generate something [like this](https://pytest-django-queries.readthedocs.io/en/latest/html_export_results.html).
 
-## Comparing results
+## Comparing Results
 
-When running pytest, pass the `--django-backup-queries` (can take a path, optionally)
-then you can run `django-queries diff` to generate results looking like this:
+You can run `django-queries backup` (can take a path, optionally) after
+running your tests then rerun them. After that, you can run `django-queries diff`
+to generate results looking like this:
 
 <a href='./docs/_static/diff_results.png'>
   <img src='./docs/_static/diff_results.png' alt='screenshot' width='500px' />

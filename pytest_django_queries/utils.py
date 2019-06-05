@@ -1,3 +1,4 @@
+import shutil
 import sys
 
 import click
@@ -14,3 +15,7 @@ def assert_type(value, expected_type):
             "Expected a %s, got %s instead"
             % (expected_type.__name__, type(value).__name__)
         )
+
+
+def create_backup(save_path, backup_path):
+    shutil.copy(save_path, backup_path)

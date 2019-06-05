@@ -219,3 +219,21 @@ def test_export_to_html_using_invalid_custom_template_should_fail(testdir):
         'Error: Invalid value for "--template": '
         "The file is not a valid jinja2 template: tag name expected" in result.stdout
     )
+
+
+def test_backup_command_is_making_a_backup(testdir):
+    results_file = str(testdir.tmpdir.join(".pytest-queries"))
+
+    with open(results_file, "w") as fp:
+        fp.write("hello!")
+
+    backup_file = testdir.tmpdir.join("backup.json")
+
+    runner = CliRunner()
+    result = runner.invoke(cli.main, ["backup", "backup.json"])
+    assert result.exit_code == 0, result.stdout
+    assert result.stdout == ".pytest-queries -> backup.json\n"
+
+    assert backup_file.check()
+    with open(str(backup_file), "r") as fp:
+        assert fp.read() == "hello!"

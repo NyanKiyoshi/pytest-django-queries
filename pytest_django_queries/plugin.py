@@ -1,12 +1,14 @@
 import json
-import shutil
 from os.path import isfile
 
 import pytest
 from django.test.utils import CaptureQueriesContext
 
 # Defines the plugin marker name
+from pytest_django_queries.utils import create_backup
+
 PYTEST_QUERY_COUNT_MARKER = "count_queries"
+PYTEST_QUERY_COUNT_FIXTURE_NAME = "count_queries"
 DEFAULT_RESULT_FILENAME = ".pytest-queries"
 DEFAULT_OLD_RESULT_FILENAME = ".pytest-queries.old"
 
@@ -17,10 +19,6 @@ def _set_session(config, new_session):
 
 def _get_session(request):
     return request.config.pytest_django_queries_session
-
-
-def _create_backup(save_path, backup_path):
-    shutil.copy(save_path, backup_path)
 
 
 class _Session(object):
@@ -42,7 +40,7 @@ class _Session(object):
 
     def save_json(self):
         if self.backup_path and isfile(self.save_path):
-            _create_backup(self.save_path, self.backup_path)
+            create_backup(self.save_path, self.backup_path)
 
         with open(self.save_path, "w") as fp:
             json.dump(self._data, fp, indent=2)
@@ -78,16 +76,6 @@ def pytest_addoption(parser):
 
 
 @pytest.mark.tryfirst
-def pytest_configure(config):
-    """Append the plugin markers to the pytest configuration."""
-    config_line = (
-        "%s: Mark the test as to have their queries counted."
-        "" % PYTEST_QUERY_COUNT_MARKER
-    )
-    config.addinivalue_line("markers", config_line)
-
-
-@pytest.mark.tryfirst
 def pytest_load_initial_conftests(early_config, parser, args):
     """
     :param early_config:
@@ -96,6 +84,12 @@ def pytest_load_initial_conftests(early_config, parser, args):
     :type args: tuple|list
     :return:
     """
+    early_config.addinivalue_line(
+        "markers",
+        "%s: Mark the test as to have their database query counted."
+        "" % PYTEST_QUERY_COUNT_MARKER,
+    )
+
     save_path = early_config.known_args_namespace.queries_results_save_path
     backup_path = early_config.known_args_namespace.queries_backup_results
 
@@ -112,13 +106,26 @@ def pytest_sessionfinish(session, exitstatus):
     yield
 
 
+def _process_query_count_marker(request, *_args, **kwargs):
+    autouse = kwargs.setdefault("autouse", True)
+    if autouse:
+        request.getfixturevalue(PYTEST_QUERY_COUNT_FIXTURE_NAME)
+
+
 @pytest.fixture(autouse=True)
 def _pytest_query_marker(request):
     """Use the fixture to count the queries on the current node if it's
-    marked with 'count_queries'."""
+    marked with 'count_queries'.
+
+    Optional keyword-arguments:
+        - autouse (bool, default: True)
+          Whether the fixture should be used automatically.
+          This might be useful if you are executing fixtures
+          that are making queries and still want to mark the test
+          but place the fixture manually."""
     marker = request.node.get_closest_marker(PYTEST_QUERY_COUNT_MARKER)
     if marker:
-        request.getfixturevalue("count_queries")
+        _process_query_count_marker(request, *marker.args, **marker.kwargs)
 
 
 @pytest.fixture

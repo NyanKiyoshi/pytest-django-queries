@@ -15,14 +15,22 @@ Customizing the Save Path
 Backing Up Results
 ++++++++++++++++++
 
-You can pass the ``--django-backup-queries`` parameter to backup previous results to `.pytest-django.old``.
+The easiest way is to run the ``django-queries backup`` command which will create a copy of the current results.
+
+Another way is by passing the ``--django-backup-queries`` parameter to backup previous results to `.pytest-django.old``.
 
 Or pass a custom path.
 
 .. code-block:: text
 
     --django-backup-queries=[PATH]
-    Whether the old results should be backed up or not before overriding.
+      Whether the old results should be backed up or not before overriding.
+
+
+Running Tests Separately
+++++++++++++++++++++++++
+
+To only run the ``count_queries`` marked tests and nothing else, you can run ``pytest -v -m count_queries``.
 
 
 CLI Usage
@@ -52,11 +60,13 @@ The HTML Command
     Render the results as HTML instead of a raw table.
 
     Options:
-        -o                  The path to save the HTML file into
-                            django-queries.html by default.
-                            You can pass a dash (-) to write to stdout as well.
-        --template INTEGER
-        --help              Show this message and exit.
+        -o                      The path to save the HTML file into
+                                django-queries.html by default.
+                                You can pass a dash (-) to write to stdout as well.
+
+        --template JINJA2_FILE  Use a custom jinja2 template for rendering HTML results.
+
+        --help                  Show this message and exit.
 
 
 The SHOW Command

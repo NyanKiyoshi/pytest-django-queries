@@ -67,6 +67,11 @@ Quick Start
         :align: center
 
 
+.. warning::
+
+    Please take a quick look at our :ref:`recommendations <recommendations>` before starting using the plugin in your project tests.
+
+
 Getting Help
 ============
 Feel free to `open an issue <https://github.com/NyanKiyoshi/pytest-django-queries/issues>`_ in our GitHub repository! Or reach `hello@vanille.bid <mailto:hello@vanille.bid>`_.
@@ -83,6 +88,7 @@ More Topics
 .. toctree::
     :maxdepth: 2
 
+    recommendations
     diff
     customize
     usage

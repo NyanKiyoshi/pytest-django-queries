@@ -82,7 +82,7 @@ def test_plugin_exports_results_even_when_test_fails(testdir):
     )
     results = testdir.runpytest("--django-db-bench", results_path)
 
-    # Ensure the tests have passed
+    # Ensure the tests have failed
     results.assert_outcomes(0, 0, 1)
 
     # Ensure the results file was created
@@ -92,6 +92,65 @@ def test_plugin_exports_results_even_when_test_fails(testdir):
             "test_failure": {"query-count": 0}
         }
     }
+
+
+def test_plugin_marker_without_autouse_handles_other_fixtures(testdir):
+    """Ensure marking a test for counting queries is not counting other fixtures."""
+
+    results_path = testdir.tmpdir.join("results.json")
+    testdir.makepyfile(
+        """
+        import pytest
+
+        @pytest.fixture()
+        def fixture_with_db_queries():
+            from django.db import connection
+
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT date('now');")
+                cursor.execute("SELECT 1;")
+                cursor.fetchone()
+
+        @pytest.mark.count_queries(autouse=False)
+        def test_with_side_effects(fixture_with_db_queries, count_queries):
+            pass
+    """
+    )
+    results = testdir.runpytest("--django-db-bench", results_path)
+
+    # Ensure the tests have passed
+    results.assert_outcomes(1, 0, 0)
+
+    # Ensure the results file was created
+    assert results_path.check()
+    assert json.load(results_path) == {
+        "test_plugin_marker_without_autouse_handles_other_fixtures": {
+            "test_with_side_effects": {"query-count": 0}
+        }
+    }
+
+
+def test_plugin_marker_without_autouse_disabled(testdir):
+    """Ensure marking a test for counting queries without autouse
+    is actually not counting queries unless the fixture is used manually."""
+
+    results_path = testdir.tmpdir.join("results.json")
+    testdir.makepyfile(
+        """
+        import pytest
+
+        @pytest.mark.count_queries(autouse=False)
+        def test_without_autouse():
+            pass
+    """
+    )
+    results = testdir.runpytest("--django-db-bench", results_path)
+
+    # Ensure the tests have passed
+    results.assert_outcomes(1, 0, 0)
+
+    # Ensure not results were found
+    assert not results_path.check()
 
 
 def test_fixture_is_backing_up_old_results(testdir):
@@ -151,7 +210,7 @@ def test_fixture_is_not_backing_up_if_not_asked_to(testdir):
     # and triggers a counting of the query number
     testdir.makepyfile(test_file=DUMMY_TEST_QUERY)
 
-    with mock.patch("pytest_django_queries.plugin._create_backup") as mocked_backup:
+    with mock.patch("pytest_django_queries.plugin.create_backup") as mocked_backup:
         results = testdir.runpytest("--django-db-bench", results_path)
         assert mocked_backup.call_count == 0
 
@@ -169,7 +228,7 @@ def test_fixture_is_backing_up_old_results_to_default_path_if_no_path_provided(t
     # and triggers a counting of the query number
     testdir.makepyfile(test_file=DUMMY_TEST_QUERY)
 
-    with mock.patch("pytest_django_queries.plugin._create_backup") as mocked_backup:
+    with mock.patch("pytest_django_queries.plugin.create_backup") as mocked_backup:
         from pytest_django_queries.plugin import DEFAULT_OLD_RESULT_FILENAME
 
         results = testdir.runpytest(
@@ -188,7 +247,7 @@ def test_marker_message(testdir):
     result.stdout.fnmatch_lines(
         [
             "@pytest.mark.count_queries: "
-            "Mark the test as to have their queries counted."
+            "Mark the test as to have their database query counted."
         ]
     )
 
