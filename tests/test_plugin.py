@@ -1,6 +1,7 @@
 import json
 
 import mock
+import pytest
 
 DUMMY_TEST_QUERY = """
     import pytest
@@ -266,3 +267,39 @@ def test_implements_custom_options(testdir):
             "*before overriding",
         ]
     )
+
+
+def test_xdist_combine_racecondition(testdir):
+    try:
+        import xdist  # noqa
+    except ImportError:
+        pytest.skip("pytest-xdist is not installed.")
+
+    results_path = testdir.tmpdir.join("results.json")
+
+    script = testdir.makepyfile(
+        test_module="""
+        import pytest
+
+        @pytest.mark.parametrize("foo", range(500))
+        @pytest.mark.count_queries
+        def test_foo(foo):
+
+            from django.db import connection
+
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT date('now');")
+                cursor.execute("SELECT 1;")
+                cursor.fetchone()"""
+    )
+
+    results = testdir.runpytest("--django-db-bench", results_path, "-n", "5", script)
+
+    # Ensure the tests have passed
+    results.assert_outcomes(500, 0, 0)
+    assert results_path.check()
+
+    # Check the resulst
+    results = json.load(results_path)
+    assert list(results.keys()) == ["test_module"]
+    assert len(results["test_module"]) == 500

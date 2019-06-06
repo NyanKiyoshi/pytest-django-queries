@@ -85,7 +85,7 @@ install:
          && django=https://github.com/django/django/archive/master.tar.gz \
          || django="django${DJANGO}"
     fi
-  - pip install tox-travis codecov coverage $django
+  - pip install pytest-xdist tox-travis codecov coverage $django
   - >
     if [ -n "$TEST_PYPI" ]; then
       if [ -n "$TRAVIS_TAG" ]; then

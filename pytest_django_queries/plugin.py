@@ -1,4 +1,8 @@
 import json
+import os.path
+import shutil
+import tempfile
+from os import listdir
 from os.path import isfile
 
 import pytest
@@ -13,45 +17,39 @@ DEFAULT_RESULT_FILENAME = ".pytest-queries"
 DEFAULT_OLD_RESULT_FILENAME = ".pytest-queries.old"
 
 
-def _set_session(config, new_session):
-    config.pytest_django_queries_session = new_session
+def is_slave(config):
+    return hasattr(config, "slaveinput")
 
 
-def _get_session(request):
-    return request.config.pytest_django_queries_session
+def get_slaveid(config):
+    if hasattr(config, "slaveinput"):
+        return config.workerinput["slaveid"]
+    else:
+        return "master"
 
 
-class _Session(object):
-    def __init__(self, save_path, backup_path):
-        """
-        :param save_path:
-        :type save_path: str
+def save_results_to_json(save_path, backup_path, data):
+    if backup_path and isfile(save_path):
+        create_backup(save_path, backup_path)
 
-        :param backup_path:
-        :type backup_path: bool
-        """
-        self.save_path = save_path
-        self.backup_path = backup_path
-        self._data = {}
+    with open(save_path, "w") as fp:
+        json.dump(data, fp, indent=2)
 
-    def add_entry(self, module_name, test_name, query_count):
-        module_data = self._data.setdefault(module_name, {})
-        module_data[test_name] = {"query-count": query_count}
 
-    def save_json(self):
-        if self.backup_path and isfile(self.save_path):
-            create_backup(self.save_path, self.backup_path)
+def add_entry(request, queries, dirout):
+    module_name = request.node.module.__name__
+    test_name = request.node.name
+    query_count = len(queries)
 
-        with open(self.save_path, "w") as fp:
-            json.dump(self._data, fp, indent=2)
+    result_line = "%s\t%s\t%s\n" % (module_name, test_name, query_count)
+    save_path = os.path.join(dirout, get_slaveid(request.config))
+    if os.path.isfile(save_path):
+        mode = "a"
+    else:
+        mode = "w"
 
-    def finish(self):
-        """Serialize and export the test data if performance tests were run."""
-
-        if not self._data:
-            return
-
-        self.save_json()
+    with open(save_path, mode=mode) as fp:
+        fp.write(result_line)
 
 
 def pytest_addoption(parser):
@@ -90,20 +88,13 @@ def pytest_load_initial_conftests(early_config, parser, args):
         "" % PYTEST_QUERY_COUNT_MARKER,
     )
 
-    save_path = early_config.known_args_namespace.queries_results_save_path
     backup_path = early_config.known_args_namespace.queries_backup_results
 
     # Set default value if the flag was provided without value in arguments
     if backup_path is None and "--django-backup-queries" in args:
         backup_path = DEFAULT_OLD_RESULT_FILENAME
 
-    _set_session(early_config, _Session(save_path, backup_path))
-
-
-@pytest.hookimpl(hookwrapper=True)
-def pytest_sessionfinish(session, exitstatus):
-    _get_session(session).finish()
-    yield
+    early_config.known_args_namespace.queries_backup_results = backup_path
 
 
 def _process_query_count_marker(request, *_args, **kwargs):
@@ -128,6 +119,59 @@ def _pytest_query_marker(request):
         _process_query_count_marker(request, *marker.args, **marker.kwargs)
 
 
+def pytest_configure(config):
+    config.django_queries_shared_directory = tempfile.mkdtemp(
+        prefix="pytest-django-queries"
+    )
+
+
+def pytest_unconfigure(config):
+    results_path = config.django_queries_shared_directory
+    test_results = {}
+
+    for filename in listdir(results_path):
+        with open(os.path.join(results_path, filename)) as fp:
+            for result_line in fp.readlines():
+                result_line = result_line.strip()
+
+                if not result_line:
+                    continue
+
+                module_name, test_name, query_count = result_line.split("\t")
+
+                module_entries = test_results.setdefault(module_name, {})
+                module_entries[test_name] = {"query-count": int(query_count)}
+
+    if test_results:
+        save_results_to_json(
+            save_path=config.known_args_namespace.queries_results_save_path,
+            backup_path=config.known_args_namespace.queries_backup_results,
+            data=test_results,
+        )
+
+    # clean up the temporary directory
+    shutil.rmtree(config.django_queries_shared_directory)
+
+
+def pytest_configure_node(node):
+    node.slaveinput[
+        "_django_queries_shared_dir"
+    ] = node.config.django_queries_shared_directory
+
+
+pytest_configure_node.optionalhook = True
+
+
+def get_shared_directory(request):
+    """Returns a unique and temporary directory which can be shared by
+    master or worker nodes in xdist runs.
+    """
+    if not is_slave(request.config):
+        return request.config.django_queries_shared_directory
+    else:
+        return request.config.slaveinput["_django_queries_shared_dir"]
+
+
 @pytest.fixture
 def count_queries(request):
     """Wrap a test to count the number of performed queries."""
@@ -135,8 +179,4 @@ def count_queries(request):
 
     with CaptureQueriesContext(connection) as context:
         yield context
-        query_count = len(context)
-
-    module = request.node.module.__name__
-    bench_name = request.node.name
-    _get_session(request).add_entry(module, bench_name, query_count)
+    add_entry(request, context, get_shared_directory(request))
