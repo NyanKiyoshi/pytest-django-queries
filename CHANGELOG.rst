@@ -1,3 +1,9 @@
+v1.0.0rc3 - June 6th 2019
++++++++++++++++++++++++++
+
+- Added support for running tests into multiple workers (``pytest-xdist``).
+
+
 v1.0.0rc2 - June 5th 2019
 +++++++++++++++++++++++++
 
