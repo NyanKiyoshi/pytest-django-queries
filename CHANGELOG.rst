@@ -1,3 +1,9 @@
+v1.0.0 - June 7th 2019
+++++++++++++++++++++++
+
+- Released the stable v1.0.0 release without any changes.
+
+
 v1.0.0rc3 - June 6th 2019
 +++++++++++++++++++++++++
 
