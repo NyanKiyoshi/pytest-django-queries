@@ -15,13 +15,13 @@
     <a href='https://pypi.python.org/pypi/pytest-django-queries'>
       <img src='https://img.shields.io/pypi/v/pytest-django-queries.svg' alt='Version' />
     </a>
-    <a href="https://pypi.org/project/pytest-django-queries/1.0.0/">
-      <img src="https://img.shields.io/badge/pypi%20unstable-v1.0.0-FF0000.svg" alt="Latest Unstable on pypi">
+    <a href="https://pypi.org/project/pytest-django-queries/1.1.0/">
+      <img src="https://img.shields.io/badge/pypi%20unstable-v1.1.0-FF0000.svg" alt="Latest Unstable on pypi">
     </a>
   </p>
   <p>
-    <a href='https://github.com/NyanKiyoshi/pytest-django-queries/compare/v1.0.0...master'>
-      <img src='https://img.shields.io/github/commits-since/NyanKiyoshi/pytest-django-queries/v1.0.0.svg' alt='Commits since latest release' />
+    <a href='https://github.com/NyanKiyoshi/pytest-django-queries/compare/v1.1.0...master'>
+      <img src='https://img.shields.io/github/commits-since/NyanKiyoshi/pytest-django-queries/v1.1.0.svg' alt='Commits since latest release' />
     </a>
     <a href='https://pypi.python.org/pypi/pytest-django-queries'>
       <img src='https://img.shields.io/pypi/pyversions/pytest-django-queries.svg' alt='Supported versions' />
@@ -117,25 +117,23 @@ django-queries show
 
 You will get something like this to represent the results:
 ```shell
-+---------+-------------------------+
-| Module  |          Tests          |
-+---------+-------------------------+
-| module1 | +-----------+---------+ |
-|         | | Test Name | Queries | |
-|         | +-----------+---------+ |
-|         | |   test1   |    0    | |
-|         | +-----------+---------+ |
-|         | |   test2   |    1    | |
-|         | +-----------+---------+ |
-+---------+-------------------------+
-| module2 | +-----------+---------+ |
-|         | | Test Name | Queries | |
-|         | +-----------+---------+ |
-|         | |   test1   |   123   | |
-|         | +-----------+---------+ |
-+---------+-------------------------+
-| module3 |                         |
-+---------+-------------------------+
++---------+--------------------------------------+
+| Module  |          Tests                       |
++---------+--------------------------------------+
+| module1 | +-----------+---------+------------+ |
+|         | | Test Name | Queries | Duplicated | |
+|         | +-----------+---------+------------+ |
+|         | |   test1   |    0    |     0      | |
+|         | +-----------+---------+------------+ |
+|         | |   test2   |    1    |     0      | |
+|         | +-----------+---------+------------+ |
++---------+--------------------------------------+
+| module2 | +-----------+---------+------------+ |
+|         | | Test Name | Queries | Duplicated | |
+|         | +-----------+---------+------------+ |
+|         | |   test1   |   123   |     0      | |
+|         | +-----------+---------+------------+ |
++---------+--------------------------------------+
 ```
 
 ## Exporting the Results (HTML)

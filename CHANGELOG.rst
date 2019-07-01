@@ -1,3 +1,9 @@
+v1.1.0 - June 1st 2019
+++++++++++++++++++++++
+
+- The cli tools now display the number of duplicated queries.
+
+
 v1.0.0 - June 7th 2019
 ++++++++++++++++++++++
 

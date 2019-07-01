@@ -39,9 +39,16 @@ def save_results_to_json(save_path, backup_path, data):
 def add_entry(request, queries, dirout):
     module_name = request.node.module.__name__
     test_name = request.node.name
+    queries = queries[:]
     query_count = len(queries)
+    duplicate_count = query_count - len(set((q["sql"] for q in queries)))
 
-    result_line = "%s\t%s\t%s\n" % (module_name, test_name, query_count)
+    result_line = "%s\t%s\t%d\t%d\n" % (
+        module_name,
+        test_name,
+        query_count,
+        duplicate_count,
+    )
     save_path = os.path.join(dirout, get_slaveid(request.config))
     if os.path.isfile(save_path):
         mode = "a"
@@ -137,10 +144,15 @@ def pytest_unconfigure(config):
                 if not result_line:
                     continue
 
-                module_name, test_name, query_count = result_line.split("\t")
+                module_name, test_name, query_count, duplicates = result_line.split(
+                    "\t"
+                )
 
                 module_entries = test_results.setdefault(module_name, {})
-                module_entries[test_name] = {"query-count": int(query_count)}
+                module_entries[test_name] = {
+                    "query-count": int(query_count),
+                    "duplicates": int(duplicates),
+                }
 
     if test_results:
         save_results_to_json(

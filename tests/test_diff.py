@@ -14,7 +14,9 @@ def test_comparison_deleted_test_triggers_negative_review(right):
     # 1. start with '-'
     # 2. to give a left value of 1
     # 3. to give a right value of N/A
-    assert "- deleted func     \t          1\t          -" in module_diffs
+    assert (
+        "- deleted func     \t          1\t          -\t            UNK" in module_diffs
+    )
 
 
 @pytest.mark.parametrize("left", ({}, {"test_module": {}}, {"test_module_123": {}}))
@@ -27,7 +29,9 @@ def test_comparison_new_test_triggers_positive_review(left):
     # 1. start with '+'
     # 2. to give a left value of N/A
     # 3. to give a right value of 1
-    assert "+ added func     \t          -\t          1" in module_diffs
+    assert (
+        "+ added func     \t          -\t          1\t            UNK" in module_diffs
+    )
 
 
 def test_comparison_diff_is_correct(valid_comparison_entries):
@@ -38,6 +42,15 @@ def test_comparison_diff_is_correct(valid_comparison_entries):
     module_diffs = list(next(iter(DiffGenerator(left, right)))[1])
 
     assert len(module_diffs) == 4  # 3 tests + header
-    assert "+ improved func      \t         20\t         19" in module_diffs
-    assert "- degraded func      \t         15\t         16" in module_diffs
-    assert "  unchanged func     \t          1\t          1" in module_diffs
+    assert (
+        "+ improved func      \t         20\t         19\t              0"
+        in module_diffs
+    )
+    assert (
+        "- degraded func      \t         15\t         16\t              0"
+        in module_diffs
+    )
+    assert (
+        "  unchanged func     \t          1\t          1\t              0"
+        in module_diffs
+    )

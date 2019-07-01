@@ -37,7 +37,7 @@ def test_fixture_is_invoked_when_marked(testdir):
     # Ensure the results file was created
     assert results_path.check()
     assert json.load(results_path) == {
-        "test_file": {"test_count_db_query_number": {"query-count": 2}}
+        "test_file": {"test_count_db_query_number": {"query-count": 2, "duplicates": 0}}
     }
 
 
@@ -90,7 +90,7 @@ def test_plugin_exports_results_even_when_test_fails(testdir):
     assert results_path.check()
     assert json.load(results_path) == {
         "test_plugin_exports_results_even_when_test_fails": {
-            "test_failure": {"query-count": 0}
+            "test_failure": {"query-count": 0, "duplicates": 0}
         }
     }
 
@@ -126,7 +126,7 @@ def test_plugin_marker_without_autouse_handles_other_fixtures(testdir):
     assert results_path.check()
     assert json.load(results_path) == {
         "test_plugin_marker_without_autouse_handles_other_fixtures": {
-            "test_with_side_effects": {"query-count": 0}
+            "test_with_side_effects": {"query-count": 0, "duplicates": 0}
         }
     }
 
@@ -194,11 +194,15 @@ def test_fixture_is_backing_up_old_results(testdir):
 
     # Check contents
     assert json.load(results_path) == {
-        "test_file": {"test_count_db_query_number": {"query-count": 2}},
-        "test_otherfile": {"test_count_db_query_number": {"query-count": 2}},
+        "test_file": {
+            "test_count_db_query_number": {"query-count": 2, "duplicates": 0}
+        },
+        "test_otherfile": {
+            "test_count_db_query_number": {"query-count": 2, "duplicates": 0}
+        },
     }
     assert json.load(old_results_path) == {
-        "test_file": {"test_count_db_query_number": {"query-count": 2}}
+        "test_file": {"test_count_db_query_number": {"query-count": 2, "duplicates": 0}}
     }
 
 
@@ -267,6 +271,38 @@ def test_implements_custom_options(testdir):
             "*before overriding",
         ]
     )
+
+
+def test_duplicated_queries(testdir):
+    results_path = testdir.tmpdir.join("results.json")
+
+    script = testdir.makepyfile(
+        test_module="""
+        import pytest
+
+        @pytest.mark.count_queries
+        def test_foo():
+
+            from django.db import connection
+
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT date('now');")
+                cursor.execute("SELECT 1;")
+                cursor.execute("SELECT 1;")
+                cursor.execute("SELECT 1;")
+                cursor.fetchone()"""
+    )
+
+    results = testdir.runpytest("--django-db-bench", results_path, script)
+
+    # Ensure the tests have passed
+    results.assert_outcomes(1, 0, 0)
+    assert results_path.check()
+
+    # Check the resulst
+    assert json.load(results_path) == {
+        "test_module": {"test_foo": {"duplicates": 2, "query-count": 4}}
+    }
 
 
 def test_xdist_combine_racecondition(testdir):

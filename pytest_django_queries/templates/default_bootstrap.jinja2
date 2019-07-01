@@ -25,6 +25,7 @@
                         <tr>
                             <th>Benchmark name</th>
                             <th>Query count</th>
+                            <th>Duplicated count</th>
                         </tr>
                     </thead>
 
@@ -37,10 +38,13 @@
                                 <td>
                                     <strong>{{ test_entry['query-count'] }}</strong>
                                 </td>
+                                <td>
+                                    <strong>{{ test_entry.duplicate_count }}</strong>
+                                </td>
                             </tr>
                         {% else %}
                             <tr>
-                                <td colspan="2">
+                                <td colspan="3">
                                     <p>No data.</p>
                                 </td>
                             </tr>
