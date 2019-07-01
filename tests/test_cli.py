@@ -59,7 +59,7 @@ def test_load_valid_empty_json_file_is_success(testdir):
 
 VALID_DATA = {
     "module1": {"test1": {"query-count": 0}, "test2": {"query-count": 1}},
-    "module2": {"test1": {"query-count": 123}},
+    "module2": {"test1": {"query-count": 123, "duplicates": 0}},
     "module3": {},
 }
 
@@ -73,25 +73,25 @@ def test_load_valid_json_file_shows_correct_data(testdir):
         result.stdout.strip()
         == dedent(
             """
-        +---------+-------------------------+
-        | Module  |          Tests          |
-        +---------+-------------------------+
-        | module1 | +-----------+---------+ |
-        |         | | Test Name | Queries | |
-        |         | +-----------+---------+ |
-        |         | |   test1   |    0    | |
-        |         | +-----------+---------+ |
-        |         | |   test2   |    1    | |
-        |         | +-----------+---------+ |
-        +---------+-------------------------+
-        | module2 | +-----------+---------+ |
-        |         | | Test Name | Queries | |
-        |         | +-----------+---------+ |
-        |         | |   test1   |   123   | |
-        |         | +-----------+---------+ |
-        +---------+-------------------------+
-        | module3 |                         |
-        +---------+-------------------------+
+            +---------+--------------------------------------+
+            | Module  |                Tests                 |
+            +---------+--------------------------------------+
+            | module1 | +-----------+---------+------------+ |
+            |         | | Test Name | Queries | Duplicated | |
+            |         | +-----------+---------+------------+ |
+            |         | |   test1   |    0    |    UNK     | |
+            |         | +-----------+---------+------------+ |
+            |         | |   test2   |    1    |    UNK     | |
+            |         | +-----------+---------+------------+ |
+            +---------+--------------------------------------+
+            | module2 | +-----------+---------+------------+ |
+            |         | | Test Name | Queries | Duplicated | |
+            |         | +-----------+---------+------------+ |
+            |         | |   test1   |   123   |     0      | |
+            |         | +-----------+---------+------------+ |
+            +---------+--------------------------------------+
+            | module3 |                                      |
+            +---------+--------------------------------------+
     """
         ).strip()
     )
@@ -119,10 +119,13 @@ def test_load_valid_json_file_shows_correct_html_data(testdir):
                 test_data[0].split("test")[1],
                 test_data[1],
             )
-            received_test_name, received_count = html_row.select("td")
+            received_test_name, received_count, duplicates = html_row.select("td")
             assert received_test_name.get_text(strip=True) == expected_test_name
             assert received_count.get_text(strip=True) == str(
                 expected_data["query-count"]
+            )
+            assert duplicates.get_text(strip=True) == str(
+                expected_data.get("duplicates", "UNK")
             )
 
 

@@ -1,7 +1,7 @@
 # coding=utf-8
 from collections import namedtuple
 
-from pytest_django_queries.entry import Entry
+from pytest_django_queries.entry import Entry  # noqa
 from pytest_django_queries.filters import format_underscore_name_to_human
 
 _ROW_FIELD = namedtuple("_RowField", ("comp_field", "align_char", "length_field"))
@@ -9,6 +9,7 @@ _ROW_FIELDS = (
     _ROW_FIELD("test_name", "<", "test_name"),
     _ROW_FIELD("left_count", ">", "query_count"),
     _ROW_FIELD("right_count", ">", "query_count"),
+    _ROW_FIELD("duplicate_count", ">", "duplicate_count"),
 )
 _ROW_PREFIX = "  "
 _NA_CHAR = "-"
@@ -18,7 +19,7 @@ def entry_row(entry_comp, lengths):
     cols = []
 
     for field, align, length_key in _ROW_FIELDS:
-        fmt = "{cmp.%s: %s{lengths[%s]}}" % (field, align, length_key)
+        fmt = "{cmp.%s: %s%d}" % (field, align, lengths[length_key])
         cols.append(fmt.format(cmp=entry_comp, lengths=lengths))
 
     return "%(diff_char)s %(results)s" % (
@@ -100,6 +101,14 @@ class SingleEntryComparison(object):
         return str(self.right.query_count) if self.right else _NA_CHAR
 
     @property
+    def duplicate_count(self):
+        if self.right:
+            return self.right.duplicate_count
+        elif self.left:
+            return self.left.duplicate_count
+        return _NA_CHAR
+
+    @property
     def diff(self):
         return self._diff_from_newest()
 
@@ -123,31 +132,18 @@ class DiffGenerator(object):
 
         self._mapping = {}
         self._generate_mapping()
-        self.longest_props = self._get_longest_per_prop({"query_count", "test_name"})
+        self.longest_props = self._get_longest_per_prop()
         self.header_rows = get_header_row(lengths=self.longest_props)
 
-    def _get_longest_per_prop(self, props):
-        """
-        :param props:
-        :type props: set
-        :return:
-        """
-
-        longest = {prop: 0 for prop in props}
-        entries = (
-            self.entries_left
-            + self.entries_right
-            + [field for field, _, _ in _ROW_FIELDS]
-        )
+    def _get_longest_per_prop(self):
+        longest = {field.length_field: len(field.comp_field) for field in _ROW_FIELDS}
+        entries = self.entries_left + self.entries_right
 
         for entry in entries:
-            for prop in props:
-                if isinstance(entry, Entry):
-                    current_length = len(str(getattr(entry, prop, None)))
-                else:
-                    current_length = len(entry)
-                if current_length > longest[prop]:
-                    longest[prop] = current_length
+            for field in _ROW_FIELDS:
+                current_length = len(str(getattr(entry, field.comp_field, None)))
+                if current_length > longest[field.length_field]:
+                    longest[field.length_field] = current_length
 
         return longest
 
