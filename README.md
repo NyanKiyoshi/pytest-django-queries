@@ -1,6 +1,6 @@
 <div align='center'>
   <h1>pytest-django-queries</h1>
-  <p>Generate performance rapports from your django database performance tests
+  <p>Generate performance reports from your django database performance tests
   (inspired by <a href='https://coverage.readthedocs.io/en/v4.5.x/'>coverage.py</a>).</p>
   <p>
     <a href='https://travis-ci.org/NyanKiyoshi/pytest-django-queries/'>
