@@ -14,6 +14,7 @@ PROJECT_VERSION = _read_file("VERSION.txt")
 
 REQUIREMENTS = _read_file("requirements.txt").split("\n")
 DEV_REQUIREMENTS = _read_file("requirements_dev.txt").split("\n")
+TEST_REQUIREMENTS = _read_file("requirements_test.txt").split("\n")
 
 
 if isfile("README.md"):
@@ -53,6 +54,9 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     install_requires=REQUIREMENTS,
-    extras_require={"dev": DEV_REQUIREMENTS},
+    extras_require={
+        "dev": DEV_REQUIREMENTS,
+        "test": TEST_REQUIREMENTS + DEV_REQUIREMENTS,
+    },
     zip_safe=False,
 )
