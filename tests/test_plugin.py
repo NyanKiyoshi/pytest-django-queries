@@ -1,4 +1,7 @@
 import json
+import os
+import os.path
+import shutil
 
 import mock
 import pytest
@@ -316,6 +319,7 @@ def test_xdist_combine_racecondition(testdir):
     script = testdir.makepyfile(
         test_module="""
         import pytest
+        import sys
 
         @pytest.mark.parametrize("foo", range(500))
         @pytest.mark.count_queries
@@ -329,13 +333,16 @@ def test_xdist_combine_racecondition(testdir):
                 cursor.fetchone()"""
     )
 
+    # Append current test files into the temporary test directory in order
+    # to have settings.py available for PyPi packages
+    shutil.copytree(os.path.dirname(__file__), os.path.join(str(testdir) + "/tests"))
     results = testdir.runpytest("--django-db-bench", results_path, "-n", "5", script)
 
     # Ensure the tests have passed
     results.assert_outcomes(500, 0, 0)
     assert results_path.check()
 
-    # Check the resulst
+    # Check the results
     results = json.load(results_path)
     assert list(results.keys()) == ["test_module"]
     assert len(results["test_module"]) == 500
