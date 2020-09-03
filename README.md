@@ -15,8 +15,8 @@
     <a href='https://pypi.python.org/pypi/pytest-django-queries'>
       <img src='https://img.shields.io/pypi/v/pytest-django-queries.svg' alt='Version' />
     </a>
-    <a href="https://pypi.org/project/pytest-django-queries/1.2rc0/">
-      <img src="https://img.shields.io/badge/pypi%20unstable-v1.2rc0-FF0000.svg" alt="Latest Unstable on pypi">
+    <a href="https://pypi.org/project/pytest-django-queries/1.2rc1/">
+      <img src="https://img.shields.io/badge/pypi%20unstable-v1.2rc1-FF0000.svg" alt="Latest Unstable on pypi">
     </a>
   </p>
   <p>

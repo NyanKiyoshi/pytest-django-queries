@@ -1,3 +1,7 @@
+v1.2rc1 - September 3rd 2020
+++++++++++++++++++++++++++++
+- Fixed daily CI tests against PyPi.
+
 v1.2rc0 - September 3rd 2020
 ++++++++++++++++++++++++++++
 - Some tests were fixed as they were in a failing state from a old file reformatting.
