@@ -15,8 +15,8 @@
     <a href='https://pypi.python.org/pypi/pytest-django-queries'>
       <img src='https://img.shields.io/pypi/v/pytest-django-queries.svg' alt='Version' />
     </a>
-    <a href="https://pypi.org/project/pytest-django-queries/1.1.0/">
-      <img src="https://img.shields.io/badge/pypi%20unstable-v1.1.0-FF0000.svg" alt="Latest Unstable on pypi">
+    <a href="https://pypi.org/project/pytest-django-queries/1.2rc0/">
+      <img src="https://img.shields.io/badge/pypi%20unstable-v1.2rc0-FF0000.svg" alt="Latest Unstable on pypi">
     </a>
   </p>
   <p>
@@ -161,9 +161,9 @@ First of all, clone the project locally. Then, install it using the below comman
 ./setup.py develop
 ```
 
-After that, you need to install the development requirements. For that,
+After that, you need to install the development and testing requirements. For that,
 run the below command.
 
 ```shell
-pip install -e .[dev]
+pip install -e .[test]
 ```

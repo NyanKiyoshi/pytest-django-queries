@@ -1,13 +1,14 @@
-sudo: false
+dist: xenial
+os: linux
 language: python
 
 git:
   depth: false
 
 python:
-  - "2.7"
-  - "3.4"
-  - "3.5"
+  - "3.6"
+  - "3.7"
+  - "3.8"
 
 cache:
   pip: true
@@ -18,75 +19,49 @@ cache:
 
 env:
   - DJANGO="==1.11.*"
+  - DJANGO="==2.0.*"
   - DJANGO="==2.1.*"
   - DJANGO="==2.2.*"
+  - DJANGO="==3.0.*"
+  - DJANGO="==3.1.*"
   - DJANGO="master"
   - TEST_PYPI="true"
 
-matrix:
+jobs:
   fast_finish: true
   include:
-    - dist: xenial
-      python: "3.5"
-      env:
-        - DJANGO="==2.2.*"
-
-    - dist: xenial
-      python: "3.6"
-      env:
-        - DJANGO="==2.2.*"
-
-    - dist: xenial
-      python: "3.6"
-      env:
-        - DJANGO="master"
-
-    - dist: xenial
-      python: "3.7"
-      env:
-        - DJANGO="==2.2.*"
-
-    - dist: xenial
-      python: "3.7"
-      env:
-        - DJANGO="master"
-
-    - dist: xenial
-      python: "3.6"
+    - python: "3.8"
       env:
         - TEST_PRECOMMIT="true"
 
+    - python: "3.8"
+      env:
+        - DJANGO="==3.1.*"
+        - TEST_PYTEST_XDIST_134="==3.1.*"
+
   exclude:
-    - python: "2.7"
+    - python: "3.8"
+      env: DJANGO="==1.11.*"
+
+    - python: "3.8"
+      env: DJANGO="==2.0.*"
+
+    - python: "3.8"
       env: DJANGO="==2.1.*"
-    - python: "2.7"
-      env: DJANGO="==2.2.*"
-    - python: "2.7"
-      env: DJANGO="master"
-    - python: "3.4"
-      env: DJANGO="==2.1.*"
-    - python: "3.4"
-      env: DJANGO="==2.2.*"
-    - python: "3.4"
-      env: DJANGO="master"
-    - python: "3.5"  # We need to use xenial here instead of trusty
-      env: DJANGO="==2.2.*"
-    - python: "3.5"
-      env: DJANGO="master"
 
 before_install:
   - sudo apt-get update
   - sudo apt-get install -y sqlite3
 
 install:
-  - >
+  - |
     if [ -n "$DJANGO" ]; then
       [ "$DJANGO" == master ] \
          && django=https://github.com/django/django/archive/master.tar.gz \
          || django="django${DJANGO}"
     fi
-  - pip install pytest-xdist tox-travis codecov coverage $django
-  - >
+  - pip install -r requirements_test.txt $django
+  - |
     if [ -n "$TEST_PYPI" ]; then
       if [ -n "$TRAVIS_TAG" ]; then
         pip install -r requirements_dev.txt
@@ -98,10 +73,12 @@ install:
       ./setup.py develop \
       && pip install -e .[dev]
     fi
+  - |
+    [ -z "$TEST_PYTEST_XDIST_134" ] || pip install pytest-xdist\<2.0
 
 
 script:
-  - >
+  - |
     if [ -n "$TEST_PYPI" ]; then
       if [ -n "$TRAVIS_TAG" ]; then
         pytest

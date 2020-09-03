@@ -15,7 +15,7 @@ def test_show_diff(testdir, valid_comparison_entries):
     result = runner.invoke(cli.main, ["diff", "left.json", "right.json"])
     assert result.exit_code == 0, result.stdout
     assert repr(result.stdout) == repr(
-        u"""\
+        """\
 # another module
   test name          \tleft count \tright count\tduplicate count
   -------------------\t-----------\t-----------\t---------------

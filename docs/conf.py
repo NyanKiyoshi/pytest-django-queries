@@ -26,12 +26,12 @@ def _read_root_file(filename):
 
 # -- Project information -----------------------------------------------------
 
-project = u"pytest-django-queries"
-copyright = u"2019, KOCAK Mikail (NyanKiyoshi)"
-author = u"KOCAK Mikail (NyanKiyoshi)"
+project = "pytest-django-queries"
+copyright = "2019, KOCAK Mikail (NyanKiyoshi)"
+author = "KOCAK Mikail (NyanKiyoshi)"
 
 # The short X.Y version
-version = u""
+version = ""
 # The full version, including alpha/beta/rc tags
 release = _read_root_file("VERSION.txt")
 
@@ -135,8 +135,8 @@ latex_documents = [
     (
         master_doc,
         "pytest-django-queries.tex",
-        u"pytest-django-queries Documentation",
-        u"KOCAK Mikail (NyanKiyoshi)",
+        "pytest-django-queries Documentation",
+        "KOCAK Mikail (NyanKiyoshi)",
         "manual",
     )
 ]
@@ -150,7 +150,7 @@ man_pages = [
     (
         master_doc,
         "pytest-django-queries",
-        u"pytest-django-queries Documentation",
+        "pytest-django-queries Documentation",
         [author],
         1,
     )
@@ -166,7 +166,7 @@ texinfo_documents = [
     (
         master_doc,
         "pytest-django-queries",
-        u"pytest-django-queries Documentation",
+        "pytest-django-queries Documentation",
         author,
         "pytest-django-queries",
         "One line description of project.",
