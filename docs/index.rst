@@ -7,7 +7,7 @@ This is used to detect and correct features that are missing optimizations or th
 
 This is also used to quickly see and compare differences of made changes through the included diff tool.
 
-This tool supports the Python versions: 2.7, 3.4, 3.5, 3.6, 3.7, and 3.8.
+This tool supports the Python versions: 3.6, 3.7, and 3.8.
 
 
 Quick Start
