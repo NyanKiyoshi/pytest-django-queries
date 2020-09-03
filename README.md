@@ -167,4 +167,3 @@ run the below command.
 ```shell
 pip install -e .[test]
 ```
-
