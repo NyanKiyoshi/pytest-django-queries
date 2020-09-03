@@ -15,8 +15,9 @@ def test_load_invalid_json_file_triggers_error(testdir):
     result = runner.invoke(cli.main, ["show", "test_file.json"])
     assert result.exit_code == 2, result.stdout
     assert (
-        'Error: Invalid value for "[INPUT_FILE]": ' "The file is not valid json: "
-    ) in result.stdout
+        "Error: Invalid value for '[INPUT_FILE]': The file is not valid json"
+        in result.stdout
+    )
 
 
 def test_load_invalid_base_type_json_file_triggers_error(testdir):
@@ -219,7 +220,7 @@ def test_export_to_html_using_invalid_custom_template_should_fail(testdir):
     )
     assert result.exit_code == 2, result.stdout
     assert (
-        'Error: Invalid value for "--template": '
+        "Error: Invalid value for '--template': "
         "The file is not a valid jinja2 template: tag name expected" in result.stdout
     )
 

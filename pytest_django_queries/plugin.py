@@ -2,6 +2,7 @@ import json
 import os.path
 import shutil
 import tempfile
+import warnings
 from os import listdir
 from os.path import isfile
 
@@ -17,13 +18,27 @@ DEFAULT_RESULT_FILENAME = ".pytest-queries"
 DEFAULT_OLD_RESULT_FILENAME = ".pytest-queries.old"
 
 
-def is_slave(config):
-    return hasattr(config, "slaveinput")
+def get_worker_input(node):
+    workerinput = getattr(node, "workerinput", None)
+    if workerinput is None:
+        workerinput = node.slaveinput
+        warnings.warn(
+            "pytest-xdist<2.0 support will be dropped in pytest-django-queries 2.0",
+            category=DeprecationWarning,
+        )
+    return workerinput
 
 
-def get_slaveid(config):
-    if hasattr(config, "slaveinput"):
-        return config.workerinput["slaveid"]
+def is_worker(config):
+    return hasattr(config, "workerinput") or hasattr(config, "slaveinput")
+
+
+def get_workerid(config):
+    if hasattr(config, "workerinput"):
+        return config.workerinput["workerid"]
+    elif hasattr(config, "slaveinput"):
+        # Deprecated: will be removed in pytest-django-queries 2.0
+        return config.slaveinput["slaveid"]
     else:
         return "master"
 
@@ -49,7 +64,7 @@ def add_entry(request, queries, dirout):
         query_count,
         duplicate_count,
     )
-    save_path = os.path.join(dirout, get_slaveid(request.config))
+    save_path = os.path.join(dirout, get_workerid(request.config))
     if os.path.isfile(save_path):
         mode = "a"
     else:
@@ -166,7 +181,8 @@ def pytest_unconfigure(config):
 
 
 def pytest_configure_node(node):
-    node.slaveinput[
+    workerinput = get_worker_input(node)
+    workerinput[
         "_django_queries_shared_dir"
     ] = node.config.django_queries_shared_directory
 
@@ -178,10 +194,10 @@ def get_shared_directory(request):
     """Returns a unique and temporary directory which can be shared by
     master or worker nodes in xdist runs.
     """
-    if not is_slave(request.config):
+    if not is_worker(request.config):
         return request.config.django_queries_shared_directory
     else:
-        return request.config.slaveinput["_django_queries_shared_dir"]
+        return get_worker_input(request.config)["_django_queries_shared_dir"]
 
 
 @pytest.fixture
