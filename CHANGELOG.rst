@@ -1,13 +1,14 @@
-v1.2rc1 - September 3rd 2020
+v1.2.0 - March 1st 2021
 ++++++++++++++++++++++++++++
-- Fixed daily CI tests against PyPi.
+- Shipped support of pytest-xdist >= 2.0 to stable.
+
 
 v1.2rc0 - September 3rd 2020
 ++++++++++++++++++++++++++++
 - Some tests were fixed as they were in a failing state from a old file reformatting.
 - pytest-xdist compatibility was fixed for latest major version: 2.0. The bad terminologies (slaves and masters) were removed.
 - Deprecated support of pytest-xdist <2.0, will be dropped on pytest-django-queries 2.0 release.
-- Official compatibility for Python 2.7, 3.4 and 3.5 was dropped as many dependencies are no longer supporting those versions. Use this plugin on those Python versions at your own risk.
+- Official compatibility for Python 2.7, 3.4 and 3.5 was dropped.
 
 
 v1.1.0 - June 1st 2019
