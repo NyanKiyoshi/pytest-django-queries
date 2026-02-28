@@ -20,6 +20,22 @@ dependencies = [
 authors = [
   {name = "Mikail Kocak", email = "mikail-gh@pm.me"},
 ]
+classifiers=[
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Framework :: Django",
+    "Framework :: Pytest",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
 
 [project.urls]
 Homepage = "https://github.com/NyanKiyoshi/pytest-django-queries/"
