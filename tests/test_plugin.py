@@ -52,12 +52,10 @@ def test_plugin_exports_nothing_if_empty(testdir):
 
     # Run a dummy test that performs queries
     # and triggers a counting of the query number
-    testdir.makepyfile(
-        """
+    testdir.makepyfile("""
         def test_nothing():
             pass
-    """
-    )
+    """)
     results = testdir.runpytest("--django-db-bench", results_path)
 
     # Ensure the tests have passed
@@ -75,15 +73,13 @@ def test_plugin_exports_results_even_when_test_fails(testdir):
 
     # Run a dummy test that performs queries
     # and triggers a counting of the query number
-    testdir.makepyfile(
-        """
+    testdir.makepyfile("""
         import pytest
 
         @pytest.mark.count_queries
         def test_failure():
             assert 0
-    """
-    )
+    """)
     results = testdir.runpytest("--django-db-bench", results_path)
 
     # Ensure the tests have failed
@@ -102,8 +98,7 @@ def test_plugin_marker_without_autouse_handles_other_fixtures(testdir):
     """Ensure marking a test for counting queries is not counting other fixtures."""
 
     results_path = testdir.tmpdir.join("results.json")
-    testdir.makepyfile(
-        """
+    testdir.makepyfile("""
         import pytest
 
         @pytest.fixture()
@@ -118,8 +113,7 @@ def test_plugin_marker_without_autouse_handles_other_fixtures(testdir):
         @pytest.mark.count_queries(autouse=False)
         def test_with_side_effects(fixture_with_db_queries, count_queries):
             pass
-    """
-    )
+    """)
     results = testdir.runpytest("--django-db-bench", results_path)
 
     # Ensure the tests have passed
@@ -139,15 +133,13 @@ def test_plugin_marker_without_autouse_disabled(testdir):
     is actually not counting queries unless the fixture is used manually."""
 
     results_path = testdir.tmpdir.join("results.json")
-    testdir.makepyfile(
-        """
+    testdir.makepyfile("""
         import pytest
 
         @pytest.mark.count_queries(autouse=False)
         def test_without_autouse():
             pass
-    """
-    )
+    """)
     results = testdir.runpytest("--django-db-bench", results_path)
 
     # Ensure the tests have passed
@@ -279,8 +271,7 @@ def test_implements_custom_options(testdir):
 def test_duplicated_queries(testdir):
     results_path = testdir.tmpdir.join("results.json")
 
-    script = testdir.makepyfile(
-        test_module="""
+    script = testdir.makepyfile(test_module="""
         import pytest
 
         @pytest.mark.count_queries
@@ -293,8 +284,7 @@ def test_duplicated_queries(testdir):
                 cursor.execute("SELECT 1;")
                 cursor.execute("SELECT 1;")
                 cursor.execute("SELECT 1;")
-                cursor.fetchone()"""
-    )
+                cursor.fetchone()""")
 
     results = testdir.runpytest("--django-db-bench", results_path, script)
 
@@ -316,8 +306,7 @@ def test_xdist_combine_racecondition(testdir):
 
     results_path = testdir.tmpdir.join("results.json")
 
-    script = testdir.makepyfile(
-        test_module="""
+    script = testdir.makepyfile(test_module="""
         import pytest
         import sys
 
@@ -330,8 +319,7 @@ def test_xdist_combine_racecondition(testdir):
             with connection.cursor() as cursor:
                 cursor.execute("SELECT date('now');")
                 cursor.execute("SELECT 1;")
-                cursor.fetchone()"""
-    )
+                cursor.fetchone()""")
 
     # Append current test files into the temporary test directory in order
     # to have settings.py available for PyPi packages

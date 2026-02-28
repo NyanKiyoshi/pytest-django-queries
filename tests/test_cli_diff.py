@@ -14,8 +14,7 @@ def test_show_diff(testdir, valid_comparison_entries):
     runner = CliRunner()
     result = runner.invoke(cli.main, ["diff", "left.json", "right.json"])
     assert result.exit_code == 0, result.stdout
-    assert repr(result.stdout) == repr(
-        """\
+    assert repr(result.stdout) == repr("""\
 # another module
   test name          \tleft count \tright count\tduplicate count
   -------------------\t-----------\t-----------\t---------------
@@ -27,5 +26,4 @@ def test_show_diff(testdir, valid_comparison_entries):
 - degraded func      \t         15\t         16\t              0
 + improved func      \t         20\t         19\t              0
   unchanged func     \t          1\t          1\t              0
-"""
-    )
+""")

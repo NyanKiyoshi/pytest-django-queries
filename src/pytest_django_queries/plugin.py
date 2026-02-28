@@ -183,9 +183,9 @@ def pytest_unconfigure(config):
 @pytest.hookimpl(optionalhook=True)
 def pytest_configure_node(node):
     workerinput = get_worker_input(node)
-    workerinput[
-        "_django_queries_shared_dir"
-    ] = node.config.django_queries_shared_directory
+    workerinput["_django_queries_shared_dir"] = (
+        node.config.django_queries_shared_directory
+    )
 
 
 def get_shared_directory(request):

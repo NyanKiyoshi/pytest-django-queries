@@ -70,10 +70,7 @@ def test_load_valid_json_file_shows_correct_data(testdir):
     runner = CliRunner()
     result = runner.invoke(cli.main, ["show", "test_file.json"])
     assert result.exit_code == 0, result.output
-    assert (
-        result.stdout.strip()
-        == dedent(
-            """
+    assert result.stdout.strip() == dedent("""
             +---------+--------------------------------------+
             | Module  |                Tests                 |
             +---------+--------------------------------------+
@@ -93,9 +90,7 @@ def test_load_valid_json_file_shows_correct_data(testdir):
             +---------+--------------------------------------+
             | module3 |                                      |
             +---------+--------------------------------------+
-    """
-        ).strip()
-    )
+    """).strip()
 
 
 def test_load_valid_json_file_shows_correct_html_data(testdir):
