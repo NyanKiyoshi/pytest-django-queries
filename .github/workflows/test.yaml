@@ -95,7 +95,11 @@ jobs:
   # Uploads all coverage files to Codecov but only if it's NOT a fork.
   # When PR is not from a fork, Codecov requires authentication.
   upload-coverage-non-forks:
-    if: ${{ github.event.pull_request.head.repo.full_name == 'NyanKiyoshi/pytest-django-queries' }}
+    if: >-
+      ${{
+          github.ref == 'refs/heads/main'
+          || github.event.pull_request.head.repo.full_name == 'NyanKiyoshi/pytest-django-queries'
+      }}
     runs-on: ubuntu-latest
     permissions: {}
     environment: codecov
@@ -120,7 +124,13 @@ jobs:
   # Uploads all coverage files to Codecov **without** token if it's a fork.
   # This is the only case where Codecov allows to upload without auth.
   upload-coverage-forks:
-    if: ${{ github.event.pull_request.head.repo.full_name != 'NyanKiyoshi/pytest-django-queries' }}
+    if: >-
+      ${{
+        ! (
+            github.ref == 'refs/heads/main'
+            || github.event.pull_request.head.repo.full_name == 'NyanKiyoshi/pytest-django-queries'
+        )
+      }}
     runs-on: ubuntu-latest
     permissions: {}
 
