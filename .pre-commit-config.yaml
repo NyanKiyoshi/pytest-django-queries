@@ -9,7 +9,6 @@ repos:
     rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # frozen: v6.0.0
     hooks:
     -   id: trailing-whitespace
-    -   id: end-of-file-fixer
 
 - repo: https://github.com/PyCQA/flake8/
   rev: d93590f5be797aabb60e3b09f2f52dddb02f349f  # frozen: 7.3.0

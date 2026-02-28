@@ -2,13 +2,13 @@ name: Run pre-commit (Lint & Formater)
 on:
   pull_request:
   push:
-#    branches:
-#      - main
+    branches:
+      - main
 
 permissions: {}
 
 jobs:
-  test:
+  lint:
     # Run on whichever ubuntu version as behavior likely will not vary
     runs-on: ubuntu-latest
     permissions:
@@ -22,7 +22,7 @@ jobs:
         id: setup-python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
-          python-version-file: .python-version
+          python-version: 3.14t
 
       - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
         with:
@@ -32,6 +32,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v7
         with:
+          python-version: ${{ steps.setup-python.outputs.python-version }}
           version: "0.10.7"
           # uv-x86_64-unknown-linux-gnu.tar.gz.sha256
           checksum: "9ac6cee4e379a5abfca06e78a777b26b7ba1f81cb7935b97054d80d85ac00774"
