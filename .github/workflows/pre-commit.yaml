@@ -1,0 +1,43 @@
+name: Run Tests
+on:
+  pull_request:
+  push:
+#    branches:
+#      - main
+
+permissions: {}
+
+jobs:
+  test:
+    # Run on whichever ubuntu version as behavior likely will not vary
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Setup Python
+        id: setup-python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version-file: .python-version
+
+      - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit|${{ steps.setup-python.outputs.python-version }}|${{ hashFiles('.pre-commit-config.yaml') }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.10.7"
+          # uv-x86_64-unknown-linux-gnu.tar.gz.sha256
+          checksum: "9ac6cee4e379a5abfca06e78a777b26b7ba1f81cb7935b97054d80d85ac00774"
+
+      # Note: we don't use the official pre-commit action because it's mutable
+      # as it runs `pip install pre-commit` without any verification
+      - name: Run pre-commit
+        run: |
+          uv run --frozen pre-commit
