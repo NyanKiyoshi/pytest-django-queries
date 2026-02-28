@@ -13,19 +13,19 @@ def test_load_invalid_json_file_triggers_error(testdir):
     testdir.makefile(".json", test_file="")
     runner = CliRunner()
     result = runner.invoke(cli.main, ["show", "test_file.json"])
-    assert result.exit_code == 2, result.stdout
+    assert result.exit_code == 2, result.output
     assert (
         "Error: Invalid value for '[INPUT_FILE]': The file is not valid json"
-        in result.stdout
-    )
+        in result.stderr
+    ), result.output
 
 
 def test_load_invalid_base_type_json_file_triggers_error(testdir):
     testdir.makefile(".json", test_file="[]")
     runner = CliRunner()
     result = runner.invoke(cli.main, ["show", "test_file.json"])
-    assert result.exit_code == 2, result.stdout
-    assert ("The file is not a dictionary") in result.stdout
+    assert result.exit_code == 2, result.output
+    assert "The file is not a dictionary" in result.stderr, result.output
 
 
 @pytest.mark.parametrize("test_data", ('{"test": 123}', '{"test": {"something": 123}}'))
@@ -37,25 +37,25 @@ def test_load_invalid_test_entry_value_type_json_file_triggers_error(
     runner = CliRunner()
     result = runner.invoke(cli.main, ["show", "test_file.json"])
     assert result.exit_code == 1, result.stdout
-    assert ("Error: Expected a dict, got int instead\n") in result.stdout
+    assert "Error: Expected a dict, got int instead\n" in result.stderr, result.output
 
 
 def test_load_invalid_test_entry_missing_value_triggers_error(testdir):
     testdir.makefile(".json", test_file='{"test": {"something": {}}}')
     runner = CliRunner()
     result = runner.invoke(cli.main, ["show", "test_file.json"])
-    assert result.exit_code == 1, result.stdout
+    assert result.exit_code == 1, result.output
     assert (
         "Got invalid data. It is missing a required key: query-count"
-    ) in result.stdout
+    ) in result.stderr, result.output
 
 
-def test_load_valid_empty_json_file_is_success(testdir):
+def test_load_valid_empty_json_file_succeeds(testdir):
     testdir.makefile(".json", test_file="{}")
     runner = CliRunner()
     result = runner.invoke(cli.main, ["show", "test_file.json"])
-    assert result.exit_code == 0, result.stdout
-    assert result.stdout.strip() == ""
+    assert result.exit_code == 0, result.output
+    assert result.output.strip() == "", result.output
 
 
 VALID_DATA = {
@@ -69,7 +69,7 @@ def test_load_valid_json_file_shows_correct_data(testdir):
     testdir.makefile(".json", test_file=json.dumps(VALID_DATA))
     runner = CliRunner()
     result = runner.invoke(cli.main, ["show", "test_file.json"])
-    assert result.exit_code == 0, result.stdout
+    assert result.exit_code == 0, result.output
     assert (
         result.stdout.strip()
         == dedent(
@@ -218,11 +218,11 @@ def test_export_to_html_using_invalid_custom_template_should_fail(testdir):
     result = runner.invoke(
         cli.main, ["html", "test_file.json", "--template", "test_template.html"]
     )
-    assert result.exit_code == 2, result.stdout
+    assert result.exit_code == 2, result.output
     assert (
         "Error: Invalid value for '--template': "
-        "The file is not a valid jinja2 template: tag name expected" in result.stdout
-    )
+        "The file is not a valid jinja2 template: tag name expected" in result.stderr
+    ), result.output
 
 
 def test_backup_command_is_making_a_backup(testdir):

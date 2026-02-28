@@ -1,6 +1,0 @@
-beautifulsoup4
-lxml
-sphinx
-sphinx_rtd_theme
-pre-commit
-mock

@@ -155,15 +155,19 @@ to generate results looking like this:
 </a>
 
 ## Development
-First of all, clone the project locally. Then, install it using the below command.
 
-```shell
-./setup.py develop
-```
+1. The [`uv`] package manager is needed
+2. Clone the project locally
+3. Run:
 
-After that, you need to install the development and testing requirements. For that,
-run the below command.
+   ```shell
+   uv sync --all-extras --inexact
+   ```
 
-```shell
-pip install -e .[test]
-```
+   Or run (Unix-based systems only):
+
+   ```shell
+   make install
+   ```
+
+[`uv`]: https://docs.astral.sh/uv/
