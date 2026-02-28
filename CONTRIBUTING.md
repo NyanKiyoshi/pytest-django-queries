@@ -9,7 +9,7 @@
 3. Run:
 
    ```shell
-   uv sync --all-extras --inexact
+   uv sync --all-extras --all-groups --inexact
    ```
 
    Or run (Unix-based systems only):
@@ -27,7 +27,7 @@
    (automatically installed in the [Local Development] step)
 3. We use Codecov (code coverage service) to report the test coverage of your changes.
    We have a strict 100% coverage, meaning that all the code is covered by tests.
-   Please test all your changes and test them hastily, don’t test just for the sake 
+   Please test all your changes and test them hastily, don’t test just for the sake
    of testing and to get a proper coverage. We want the tests to prevent any error and
    any potential breaking from changes!
 4. Finally, make sure you are using the latest version of the dependencies and that

@@ -2,7 +2,14 @@ v1.3.0 - Unreleased
 +++++++++++++++++++
 
 - Switched project to uv and pyproject.toml
-
+- Switched build system from Travis CI to GitHub Actions
+- Removed support for Python versions: 3.6, 3.7, and 3.8
+- Added official support for Python version: 3.10, 3.11, 3.12, 3.13, and 3.14
+  (including free threading version)
+- Added example project (under ``example/``) to help users quickstart
+  their projects as well as to simplify testing during development
+- Dropped support for pytest ``>4.4.0,<7.2.0`` - minimum version is now
+  ``>=7.2.0``
 
 v1.2.0 - March 1st 2021
 +++++++++++++++++++++++
