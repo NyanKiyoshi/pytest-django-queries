@@ -47,7 +47,7 @@ CLI Usage
 
     Commands:
       html  Render the results as HTML instead of a raw table.
-      show  View a given rapport.
+      show  View a given report.
 
 
 The HTML Command
@@ -76,7 +76,7 @@ The SHOW Command
 
     Usage: django-queries show [OPTIONS] [INPUT_FILE]
 
-    View a given rapport.
+    View a given report.
 
     Options: none
 

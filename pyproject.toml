@@ -10,7 +10,7 @@ readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
 dependencies = [
-    "beautifultable",
+    "beautifultable>=v1.0.0",
     "click",
     "colorama",
     "django",
@@ -120,4 +120,15 @@ known_third_party = [
     "mock",
     "pytest",
     "setuptools",
+]
+
+[tool.uv.workspace]
+members = [
+    "example",
+    ".",
+]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
 ]

@@ -1,22 +1,22 @@
 repos:
 -   repo: https://github.com/ambv/black
-    rev: 26.1.0
+    rev: 6305bf1ae645ab7541be4f5028a86239316178eb  # frozen: 26.1.0
     hooks:
     - id: black
       language_version: python3
 
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v6.0.0
+    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # frozen: v6.0.0
     hooks:
     -   id: trailing-whitespace
     -   id: end-of-file-fixer
 
 - repo: https://github.com/PyCQA/flake8/
-  rev: 7.3.0
+  rev: d93590f5be797aabb60e3b09f2f52dddb02f349f  # frozen: 7.3.0
   hooks:
     -   id: flake8
 
 -   repo: https://github.com/PyCQA/isort
-    rev: 8.0.1
+    rev: a333737ed43df02b18e6c95477ea1b285b3de15a  # frozen: 8.0.1
     hooks:
     -   id: isort
