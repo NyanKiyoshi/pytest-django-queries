@@ -1,4 +1,4 @@
-````# Contributing
+# Contributing
 
 [Local Development]: #local-development
 
@@ -42,4 +42,3 @@
    Then, open `_build/index.html` in your browser.
 
 [changelog]: ./CHANGELOG.rst
-````
