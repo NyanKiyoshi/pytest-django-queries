@@ -2,8 +2,8 @@ name: Run Tests
 on:
   pull_request:
   push:
-#    branches:
-#      - main
+    branches:
+      - main
 
 permissions: {}
 
@@ -13,6 +13,7 @@ jobs:
       contents: read
 
     strategy:
+      fail-fast: false
       matrix:
         # (we only support non-EOL versions of Python & Django)
         python: ["3.10", "3.11", "3.12", "3.13", "3.14", "3.14t"]
@@ -21,6 +22,20 @@ jobs:
         # shouldn't vary. If it ever becomes an issue, then we can
         # add more.
         os: ["ubuntu-latest"]
+        exclude:
+          # https://docs.djangoproject.com/en/dev/faq/install/#what-python-version-can-i-use-with-django
+          # v6.0 trees:
+          - django: "6.0"
+            python: "3.10"
+          - django: "6.0"
+            python: "3.11"
+          # v4.2 trees:
+          - django: "4.2"
+            python: "3.13"
+          - django: "4.2"
+            python: "3.14"
+          - django: "4.2"
+            python: "3.14t"
 
     runs-on: ${{ matrix.os }}
 
@@ -38,6 +53,8 @@ jobs:
         uses: astral-sh/setup-uv@v7
         with:
           version: "0.10.7"
+          python-version: ${{ matrix.python }}
+          activate-environment: true
           # uv-x86_64-unknown-linux-gnu.tar.gz.sha256
           checksum: "9ac6cee4e379a5abfca06e78a777b26b7ba1f81cb7935b97054d80d85ac00774"
 
@@ -77,10 +94,12 @@ jobs:
   # Uploads all coverage files to Codecov but only if it's a push event
   # to a protected branch. Main branch uploads require authentication.
   upload-coverage-main-branch:
-    # if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     permissions: {}
     environment: codecov
+
+    needs: test
 
     steps:
       - name: Download Reports
@@ -90,15 +109,32 @@ jobs:
           pattern: coverage-py*
           merge-multiple: true
 
-      - name: Print Downloaded Files
-        run: |
-          find ./coverage/reports/
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          directory: ./coverage/reports/
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  # Uploads all coverage files to Codecov **without** token.
+  # Needed for PRs.
+  upload-coverage-pull-request:
+    if: ${{ github.ref != 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    permissions: {}
+
+    needs: test
+
+    steps:
+      - name: Download Reports
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
+        with:
+          path: ./coverage/reports/
+          pattern: coverage-py*
+          merge-multiple: true
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
           directory: ./coverage/reports/
           fail_ci_if_error: true
-          name: codecov-umbrella
-          token: ${{ secrets.CODECOV_TOKEN }}
-          verbose: true

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Book list</title>
+</head>
+<body>
+    <h1>Books</h1>
+    {% if object_list %}
+    <ul>
+        {% for object in object_list %}
+            <li>
+                <a href="{% url 'detail' object.pk %}">
+                    {{ object.name }} (by {{ object.author.name }})
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>No books found.</p>
+        <p>Hint: make sure you ran <code style="color:indianred">./manage.py migrate!</code></p>
+    {% endif %}
+</body>
+</html>
