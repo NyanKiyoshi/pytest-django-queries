@@ -101,12 +101,18 @@ jobs:
           || github.event.pull_request.head.repo.full_name == 'NyanKiyoshi/pytest-django-queries'
       }}
     runs-on: ubuntu-latest
-    permissions: {}
     environment: codecov
+    permissions:
+      contents: read
 
     needs: test
 
     steps:
+      # Codecov needs to be able to map the coverage against local files,
+      # thus we need to checkout.
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
       - name: Download Reports
         uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
@@ -132,11 +138,17 @@ jobs:
         )
       }}
     runs-on: ubuntu-latest
-    permissions: {}
+    permissions:
+      contents: read
 
     needs: test
 
     steps:
+      # Codecov needs to be able to map the coverage against local files,
+      # thus we need to checkout.
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
       - name: Download Reports
         uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:

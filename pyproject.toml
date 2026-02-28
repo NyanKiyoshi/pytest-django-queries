@@ -59,7 +59,6 @@ dev = [
     "sphinx-rtd-theme",
 ]
 test = [
-    "codecov",
     "coverage",
     "pytest-xdist",
 ]
