@@ -10,7 +10,7 @@ def raise_error(message, exit_code=1):
 
 
 def assert_type(value, expected_type):
-    if type(value) != expected_type:
+    if type(value) is not expected_type:
         raise_error(
             "Expected a %s, got %s instead"
             % (expected_type.__name__, type(value).__name__)

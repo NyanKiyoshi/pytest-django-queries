@@ -16,6 +16,8 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 import os.path
+import tomllib
+from pathlib import Path
 
 
 def _read_root_file(filename):
@@ -27,13 +29,14 @@ def _read_root_file(filename):
 # -- Project information -----------------------------------------------------
 
 project = "pytest-django-queries"
-copyright = "2019, KOCAK Mikail (NyanKiyoshi)"
-author = "KOCAK Mikail (NyanKiyoshi)"
+copyright = "2019 - 2026, Kocak Mikail (NyanKiyoshi)"
+author = "Kocak Mikail (NyanKiyoshi)"
 
-# The short X.Y version
-version = ""
 # The full version, including alpha/beta/rc tags
-release = _read_root_file("VERSION.txt")
+with (Path(__file__).resolve().parent.parent / "pyproject.toml").open("rb") as fp:
+    release = tomllib.load(fp)["project"]["version"]
+    # The short X.Y version
+    version = "".join(release.split(".")[:2])
 
 
 # -- General configuration ---------------------------------------------------
@@ -64,7 +67,7 @@ master_doc = "index"
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.

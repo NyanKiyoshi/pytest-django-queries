@@ -1,3 +1,69 @@
+[build-system]
+requires = ["uv_build>=0.10.7,<0.11.0"]
+build-backend = "uv_build"
+
+[project]
+name = "pytest-django-queries"
+version = "1.2.0"
+description = "Generate performance reports from your django database performance tests."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+dependencies = [
+    "beautifultable>=v1.0.0",
+    "click",
+    "colorama",
+    "django",
+    "jinja2",
+    "pytest>=4.4.0",
+]
+authors = [
+  {name = "Mikail Kocak", email = "mikail-gh@pm.me"},
+]
+classifiers=[
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Framework :: Django",
+    "Framework :: Pytest",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.urls]
+Homepage = "https://github.com/NyanKiyoshi/pytest-django-queries/"
+Documentation = "https://pytest-django-queries.readthedocs.io/"
+Repository = "https://github.com/NyanKiyoshi/pytest-django-queries/"
+Issues = "https://github.com/NyanKiyoshi/pytest-django-queries/issues/"
+
+[project.entry-points.pytest11]
+django_queries = "pytest_django_queries.plugin"
+
+[project.scripts]
+django-queries = "pytest_django_queries.cli:main"
+
+[dependency-groups]
+dev = [
+    "beautifulsoup4",
+    "lxml",
+    "mock",
+    "pre-commit",
+    "sphinx",
+    "sphinx-rtd-theme",
+]
+test = [
+    "codecov",
+    "coverage",
+    "pytest-xdist",
+]
+
 [tool.black]
 target_version = ['py35', 'py36', 'py37', 'py38']
 include = '\.pyi?$'
@@ -24,3 +90,61 @@ exclude = '''
   |docs
 )/
 '''
+
+[tool.coverage.run]
+branch = true
+omit = [
+    "*/tests/*",
+    "*/test_*.py",
+]
+source = "src/"
+
+[tool.coverage.report]
+exclude_lines = [
+    # Have to re-enable the standard pragma
+    "pragma: no cover",
+
+    # Don't complain about missing debug-only code:
+    "def __repr__",
+    "if self\\.debug",
+
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+
+    # Don't complain if non-runnable code isn't run:
+    "if 0:",
+    "if __name__ == .__main__.:",
+]
+
+[tool.isort]
+skip = [
+    "docs",
+]
+multi_line_output = 3
+include_trailing_comma = true
+line_length = 88
+known_first_party = [
+    "pytest_django_queries",
+]
+known_third_party = [
+    "beautifultable",
+    "bs4",
+    "click",
+    "django",
+    "jinja2",
+    "mock",
+    "pytest",
+    "setuptools",
+]
+
+[tool.uv.workspace]
+members = [
+    "example",
+    ".",
+]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]

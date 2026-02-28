@@ -1,4 +1,0 @@
-pytest-xdist
-tox-travis
-codecov
-coverage

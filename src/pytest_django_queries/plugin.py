@@ -95,7 +95,7 @@ def pytest_addoption(parser):
     )
 
 
-@pytest.mark.tryfirst
+@pytest.hookimpl(tryfirst=True)
 def pytest_load_initial_conftests(early_config, parser, args):
     """
     :param early_config:
@@ -180,14 +180,12 @@ def pytest_unconfigure(config):
     shutil.rmtree(config.django_queries_shared_directory)
 
 
+@pytest.hookimpl(optionalhook=True)
 def pytest_configure_node(node):
     workerinput = get_worker_input(node)
-    workerinput[
-        "_django_queries_shared_dir"
-    ] = node.config.django_queries_shared_directory
-
-
-pytest_configure_node.optionalhook = True
+    workerinput["_django_queries_shared_dir"] = (
+        node.config.django_queries_shared_directory
+    )
 
 
 def get_shared_directory(request):

@@ -155,15 +155,7 @@ to generate results looking like this:
 </a>
 
 ## Development
-First of all, clone the project locally. Then, install it using the below command.
 
-```shell
-./setup.py develop
-```
+Refer to the [contribution guidelines].
 
-After that, you need to install the development and testing requirements. For that,
-run the below command.
-
-```shell
-pip install -e .[test]
-```
+[contribution guidelines]: ./CONTRIBUTING.md

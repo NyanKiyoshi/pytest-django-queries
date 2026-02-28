@@ -1,10 +1,18 @@
+v1.3.0 - Unreleased
++++++++++++++++++++
+
+- Switched project to uv and pyproject.toml
+
+
 v1.2.0 - March 1st 2021
-++++++++++++++++++++++++++++
++++++++++++++++++++++++
+
 - Shipped support of pytest-xdist >= 2.0 to stable.
 
 
 v1.2rc0 - September 3rd 2020
 ++++++++++++++++++++++++++++
+
 - Some tests were fixed as they were in a failing state from a old file reformatting.
 - pytest-xdist compatibility was fixed for latest major version: 2.0. The bad terminologies (slaves and masters) were removed.
 - Deprecated support of pytest-xdist <2.0, will be dropped on pytest-django-queries 2.0 release.

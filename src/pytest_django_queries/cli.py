@@ -32,27 +32,27 @@ class JsonReportFileParamType(click.File):
     name = "report_file"
 
     def convert(self, value, param, ctx):
-        fp = super(JsonReportFileParamType, self).convert(value, param, ctx)
-        try:
-            loaded = json.load(fp)
-            if type(loaded) is not dict:
-                self.fail("The file is not a dictionary", param, ctx)
-            return loaded
-        except ValueError as e:
-            self.fail("The file is not valid json: %s" % str(e), param, ctx)
+        with super(JsonReportFileParamType, self).convert(value, param, ctx) as fp:
+            try:
+                loaded = json.load(fp)
+                if type(loaded) is not dict:
+                    self.fail("The file is not a dictionary", param, ctx)
+                return loaded
+            except ValueError as e:
+                self.fail("The file is not valid json: %s" % str(e), param, ctx)
 
 
 class Jinja2TemplateFile(click.File):
     name = "jinja2_file"
 
     def convert(self, value, param, ctx):
-        fp = super(Jinja2TemplateFile, self).convert(value, param, ctx)
-        try:
-            return Template(fp.read(), trim_blocks=True)
-        except jinja_exceptions.TemplateError as e:
-            self.fail(
-                "The file is not a valid jinja2 template: %s" % str(e), param, ctx
-            )
+        with super(Jinja2TemplateFile, self).convert(value, param, ctx) as fp:
+            try:
+                return Template(fp.read(), trim_blocks=True)
+            except jinja_exceptions.TemplateError as e:
+                self.fail(
+                    "The file is not a valid jinja2 template: %s" % str(e), param, ctx
+                )
 
 
 @click.group()
@@ -65,7 +65,7 @@ def main():
     "input_file", type=JsonReportFileParamType("r"), default=DEFAULT_RESULT_FILENAME
 )
 def show(input_file):
-    """View a given rapport."""
+    """View a given report."""
     return print_entries(input_file)
 
 
