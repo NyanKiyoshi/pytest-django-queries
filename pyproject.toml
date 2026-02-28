@@ -13,9 +13,9 @@ dependencies = [
     "beautifultable>=v1.0.0",
     "click",
     "colorama",
-    "django",
+    "django>=4.2.0",
     "jinja2",
-    "pytest>=4.4.0",
+    "pytest>=7.2.0",
 ]
 authors = [
   {name = "Mikail Kocak", email = "mikail-gh@pm.me"},
@@ -97,7 +97,7 @@ omit = [
     "*/tests/*",
     "*/test_*.py",
 ]
-source = "src/"
+source = ["src/"]
 
 [tool.coverage.report]
 exclude_lines = [

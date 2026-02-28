@@ -1,0 +1,104 @@
+name: Run Tests
+on:
+  pull_request:
+  push:
+#    branches:
+#      - main
+
+permissions: {}
+
+jobs:
+  test:
+    permissions:
+      contents: read
+
+    strategy:
+      matrix:
+        # (we only support non-EOL versions of Python & Django)
+        python: ["3.10", "3.11", "3.12", "3.13", "3.14", "3.14t"]
+        django: ["4.2", "5.2", "6.0"]
+        # We run on whichever version of ubuntu is latest as behavior
+        # shouldn't vary. If it ever becomes an issue, then we can
+        # add more.
+        os: ["ubuntu-latest"]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Setup Python
+        id: setup-python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.10.7"
+          # uv-x86_64-unknown-linux-gnu.tar.gz.sha256
+          checksum: "9ac6cee4e379a5abfca06e78a777b26b7ba1f81cb7935b97054d80d85ac00774"
+
+      # Note: we don't use the official pre-commit action because it's mutable
+      # as it runs `pip install pre-commit` without any verification
+      - name: Install Dependencies
+        run: |
+          uv sync --locked --inexact --group test
+
+      - name: Install Django
+        env:
+          DJANGO_VERSION: ${{ matrix.django }}
+        run: |
+          uv pip install "django~=${DJANGO_VERSION}"
+
+      - name: Run Pytest
+        run: |
+          coverage run -m pytest
+
+      # Converts the binary `.coverage` file to a XML file
+      # that codecov can understand
+      - name: Export Coverage
+        env:
+          PYTHON_VERSION: ${{ matrix.python }}
+          DJANGO_VERSION: ${{ matrix.django }}
+        run: |
+          coverage xml \
+            -o "coverage-py${PYTHON_VERSION}-django${DJANGO_VERSION}.xml"
+
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: coverage-py${{ matrix.python }}-django${{ matrix.django }}
+          path: ./coverage-py${{ matrix.python }}-django${{ matrix.django }}.xml
+          retention-days: 1
+          if-no-files-found: error
+
+  # Uploads all coverage files to Codecov but only if it's a push event
+  # to a protected branch. Main branch uploads require authentication.
+  upload-coverage-main-branch:
+    # if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' }}
+    runs-on: ubuntu-latest
+    permissions: {}
+    environment: codecov
+
+    steps:
+      - name: Download Reports
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
+        with:
+          path: ./coverage/reports/
+          pattern: coverage-py*
+          merge-multiple: true
+
+      - name: Print Downloaded Files
+        run: |
+          find ./coverage/reports/
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          directory: ./coverage/reports/
+          fail_ci_if_error: true
+          name: codecov-umbrella
+          token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true

@@ -1,4 +1,4 @@
-# Contributing
+````# Contributing
 
 [Local Development]: #local-development
 
@@ -9,7 +9,7 @@
 3. Run:
 
    ```shell
-   uv sync --all-extras --inexact
+   uv sync --all-extras --all-groups --inexact
    ```
 
    Or run (Unix-based systems only):
@@ -42,3 +42,4 @@
    Then, open `_build/index.html` in your browser.
 
 [changelog]: ./CHANGELOG.rst
+````
