@@ -156,18 +156,6 @@ to generate results looking like this:
 
 ## Development
 
-1. The [`uv`] package manager is needed
-2. Clone the project locally
-3. Run:
+Refer to the [contribution guidelines].
 
-   ```shell
-   uv sync --all-extras --inexact
-   ```
-
-   Or run (Unix-based systems only):
-
-   ```shell
-   make install
-   ```
-
-[`uv`]: https://docs.astral.sh/uv/
+[contribution guidelines]: ./CONTRIBUTING.md
