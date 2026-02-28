@@ -3,9 +3,6 @@
   <p>Generate performance reports from your django database performance tests
   (inspired by <a href='https://coverage.readthedocs.io/en/v4.5.x/'>coverage.py</a>).</p>
   <p>
-    <a href='https://travis-ci.org/NyanKiyoshi/pytest-django-queries/'>
-      <img src='https://travis-ci.org/NyanKiyoshi/pytest-django-queries.svg?branch=master' alt='Requirement Status' />
-    </a>
     <a href='https://codecov.io/gh/NyanKiyoshi/pytest-django-queries'>
       <img src='https://codecov.io/gh/NyanKiyoshi/pytest-django-queries/branch/master/graph/badge.svg' alt='Coverage Status' />
     </a>
