@@ -44,7 +44,7 @@ addition of in the changelog.
 - [ ] Bump the major, minor or patch version number
 
 ## Bumping the version
-- [ ] Make sure to bump the `setup.py`'s version to the correct newest version.
+- [ ] Make sure to bump the version in `pyproject.toml` to the correct newest version.
 - [ ] Update the `README.md` file's comparison tag version (look for `Commits since latest release`).
 - [ ] Commit with the message "Bump version for new release" and push it to a new branch
 - [ ] Prepare the final changelog and notes

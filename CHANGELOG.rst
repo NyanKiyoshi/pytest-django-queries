@@ -1,5 +1,5 @@
-v1.3.0 - Unreleased
-+++++++++++++++++++
+v1.3.0 - March 1st 2026
++++++++++++++++++++++++
 
 - Switched project to uv and pyproject.toml
 - Switched build system from Travis CI to GitHub Actions

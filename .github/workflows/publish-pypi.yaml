@@ -1,0 +1,87 @@
+name: Publish to PyPI
+on:
+  release:
+    types:
+      - released
+      - prereleased
+
+  workflow_dispatch:
+    inputs:
+      pypi_repo:
+        description: Which PyPI repository to use
+        required: true
+        type: choice
+        options: ["pypi", "testpypi"]
+
+permissions: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Setup Python
+        id: setup-python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.14"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
+        with:
+          python-version: ${{ steps.setup-python.outputs.python-version }}
+          version: "0.10.7"
+          # hash for uv-x86_64-unknown-linux-gnu.tar.gz.sha256
+          # (from https://github.com/astral-sh/uv/releases)
+          checksum: "9ac6cee4e379a5abfca06e78a777b26b7ba1f81cb7935b97054d80d85ac00774"
+
+      - name: Build source distributions and wheels
+        run: uv build -o ./dist
+
+      - name: Upload Build
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: "dist"
+          path: "dist/"
+          if-no-files-found: error
+          retention-days: 5
+
+  publish:
+    runs-on: ubuntu-24.04
+    environment: publish-pypi
+
+    needs:
+      - build
+
+    permissions:
+      id-token: write # Required for PyPI trusted publishing
+
+    steps:
+      - name: Download source distributions and wheels
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
+        with:
+          name: dist
+          path: dist
+
+      - name: Publish to PyPI
+        if: >-
+          github.event_name == 'release' 
+            || (
+                github.event_name == 'workflow_dispatch'
+                && github.event.inputs.pypi_repo == 'pypi'
+            )
+        uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e # v1.13.0
+
+      - name: Publish to TestPyPI
+        if: >-
+          github.event_name == 'workflow_dispatch'
+          && github.event.inputs.pypi_repo == 'testpypi'
+        uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e # v1.13.0
+        with:
+          repository-url: https://test.pypi.org/legacy/
