@@ -6,6 +6,8 @@ import shutil
 import mock
 import pytest
 
+from tests.conftest import DEFAULT_PYTEST_FLAGS
+
 DUMMY_TEST_QUERY = """
     import pytest
 
@@ -32,7 +34,9 @@ def test_fixture_is_invoked_when_marked(testdir):
     # Run a dummy test that performs queries
     # and triggers a counting of the query number
     testdir.makepyfile(test_file=DUMMY_TEST_QUERY)
-    results = testdir.runpytest("--django-db-bench", results_path)
+    results = testdir.runpytest(
+        *DEFAULT_PYTEST_FLAGS, "--django-db-bench", results_path
+    )
 
     # Ensure the tests have passed
     results.assert_outcomes(1, 0, 0)
@@ -56,7 +60,9 @@ def test_plugin_exports_nothing_if_empty(testdir):
         def test_nothing():
             pass
     """)
-    results = testdir.runpytest("--django-db-bench", results_path)
+    results = testdir.runpytest(
+        *DEFAULT_PYTEST_FLAGS, "--django-db-bench", results_path
+    )
 
     # Ensure the tests have passed
     results.assert_outcomes(1, 0, 0)
@@ -80,7 +86,9 @@ def test_plugin_exports_results_even_when_test_fails(testdir):
         def test_failure():
             assert 0
     """)
-    results = testdir.runpytest("--django-db-bench", results_path)
+    results = testdir.runpytest(
+        *DEFAULT_PYTEST_FLAGS, "--django-db-bench", results_path
+    )
 
     # Ensure the tests have failed
     results.assert_outcomes(0, 0, 1)
@@ -114,7 +122,9 @@ def test_plugin_marker_without_autouse_handles_other_fixtures(testdir):
         def test_with_side_effects(fixture_with_db_queries, count_queries):
             pass
     """)
-    results = testdir.runpytest("--django-db-bench", results_path)
+    results = testdir.runpytest(
+        *DEFAULT_PYTEST_FLAGS, "--django-db-bench", results_path
+    )
 
     # Ensure the tests have passed
     results.assert_outcomes(1, 0, 0)
@@ -140,7 +150,9 @@ def test_plugin_marker_without_autouse_disabled(testdir):
         def test_without_autouse():
             pass
     """)
-    results = testdir.runpytest("--django-db-bench", results_path)
+    results = testdir.runpytest(
+        *DEFAULT_PYTEST_FLAGS, "--django-db-bench", results_path
+    )
 
     # Ensure the tests have passed
     results.assert_outcomes(1, 0, 0)
@@ -159,7 +171,11 @@ def test_fixture_is_backing_up_old_results(testdir):
     testdir.makepyfile(test_file=DUMMY_TEST_QUERY)
 
     results = testdir.runpytest(
-        "--django-db-bench", results_path, "--django-backup-queries", old_results_path
+        *DEFAULT_PYTEST_FLAGS,
+        "--django-db-bench",
+        results_path,
+        "--django-backup-queries",
+        old_results_path,
     )
 
     # Ensure the tests have passed
@@ -177,7 +193,11 @@ def test_fixture_is_backing_up_old_results(testdir):
 
     # Run again the tests
     results = testdir.runpytest(
-        "--django-db-bench", results_path, "--django-backup-queries", old_results_path
+        *DEFAULT_PYTEST_FLAGS,
+        "--django-db-bench",
+        results_path,
+        "--django-backup-queries",
+        old_results_path,
     )
 
     # Ensure the tests have passed
@@ -211,7 +231,9 @@ def test_fixture_is_not_backing_up_if_not_asked_to(testdir):
     testdir.makepyfile(test_file=DUMMY_TEST_QUERY)
 
     with mock.patch("pytest_django_queries.plugin.create_backup") as mocked_backup:
-        results = testdir.runpytest("--django-db-bench", results_path)
+        results = testdir.runpytest(
+            *DEFAULT_PYTEST_FLAGS, "--django-db-bench", results_path
+        )
         assert mocked_backup.call_count == 0
 
     # Ensure the tests have passed
@@ -232,7 +254,10 @@ def test_fixture_is_backing_up_old_results_to_default_path_if_no_path_provided(t
         from pytest_django_queries.plugin import DEFAULT_OLD_RESULT_FILENAME
 
         results = testdir.runpytest(
-            "--django-db-bench", results_path, "--django-backup-queries"
+            *DEFAULT_PYTEST_FLAGS,
+            "--django-db-bench",
+            results_path,
+            "--django-backup-queries",
         )
         mocked_backup.assert_called_with(str(results_path), DEFAULT_OLD_RESULT_FILENAME)
 
@@ -243,7 +268,7 @@ def test_fixture_is_backing_up_old_results_to_default_path_if_no_path_provided(t
 
 def test_marker_message(testdir):
     """Ensure the custom markers configuration is added to pytest."""
-    result = testdir.runpytest("--markers")
+    result = testdir.runpytest(*DEFAULT_PYTEST_FLAGS, "--markers")
     result.stdout.fnmatch_lines(
         [
             "@pytest.mark.count_queries: "
@@ -254,7 +279,7 @@ def test_marker_message(testdir):
 
 def test_implements_custom_options(testdir):
     """Ensure the custom options are added to pytest."""
-    result = testdir.runpytest("--help")
+    result = testdir.runpytest(*DEFAULT_PYTEST_FLAGS, "--help")
     result.stdout.fnmatch_lines(
         [
             "django-queries:",
@@ -286,7 +311,9 @@ def test_duplicated_queries(testdir):
                 cursor.execute("SELECT 1;")
                 cursor.fetchone()""")
 
-    results = testdir.runpytest("--django-db-bench", results_path, script)
+    results = testdir.runpytest(
+        *DEFAULT_PYTEST_FLAGS, "--django-db-bench", results_path, script
+    )
 
     # Ensure the tests have passed
     results.assert_outcomes(1, 0, 0)
@@ -324,7 +351,9 @@ def test_xdist_combine_racecondition(testdir):
     # Append current test files into the temporary test directory in order
     # to have settings.py available for PyPi packages
     shutil.copytree(os.path.dirname(__file__), os.path.join(str(testdir) + "/tests"))
-    results = testdir.runpytest("--django-db-bench", results_path, "-n", "5", script)
+    results = testdir.runpytest(
+        *DEFAULT_PYTEST_FLAGS, "--django-db-bench", results_path, "-n", "5", script
+    )
 
     # Ensure the tests have passed
     results.assert_outcomes(500, 0, 0)

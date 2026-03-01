@@ -75,6 +75,15 @@ jobs:
         run: |
           coverage run -m pytest
 
+      - name: Test Example Project
+        env:
+          DJANGO_VERSION: ${{ matrix.django }}
+        working-directory: example/
+        run: |
+          uv pip install "django~=${DJANGO_VERSION}"
+          uv sync --locked --inexact --group dev
+          coverage run --append -m pytest
+
       # Converts the binary `.coverage` file to a XML file
       # that codecov can understand
       - name: Export Coverage

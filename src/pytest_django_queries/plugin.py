@@ -9,9 +9,9 @@ from os.path import isfile
 import pytest
 from django.test.utils import CaptureQueriesContext
 
-# Defines the plugin marker name
 from pytest_django_queries.utils import create_backup
 
+# Defines the plugin marker name
 PYTEST_QUERY_COUNT_MARKER = "count_queries"
 PYTEST_QUERY_COUNT_FIXTURE_NAME = "count_queries"
 DEFAULT_RESULT_FILENAME = ".pytest-queries"
@@ -29,11 +29,11 @@ def get_worker_input(node):
     return workerinput
 
 
-def is_worker(config):
+def is_worker(config: pytest.Config):
     return hasattr(config, "workerinput") or hasattr(config, "slaveinput")
 
 
-def get_workerid(config):
+def get_workerid(config: pytest.Config):
     if hasattr(config, "workerinput"):
         return config.workerinput["workerid"]
     elif hasattr(config, "slaveinput"):
@@ -51,7 +51,7 @@ def save_results_to_json(save_path, backup_path, data):
         json.dump(data, fp, indent=2)
 
 
-def add_entry(request, queries, dirout):
+def add_entry(request: pytest.FixtureRequest, queries, dirout):
     module_name = request.node.module.__name__
     test_name = request.node.name
     queries = queries[:]
@@ -119,14 +119,19 @@ def pytest_load_initial_conftests(early_config, parser, args):
     early_config.known_args_namespace.queries_backup_results = backup_path
 
 
-def _process_query_count_marker(request, *_args, **kwargs):
+def _process_query_count_marker(
+    config: pytest.Config, request: pytest.FixtureRequest, *_args, **kwargs
+):
     autouse = kwargs.setdefault("autouse", True)
     if autouse:
+        # Force load
+        if config.dj_queries_has_django_plugin is True:
+            request.getfixturevalue("_django_db_marker")
         request.getfixturevalue(PYTEST_QUERY_COUNT_FIXTURE_NAME)
 
 
 @pytest.fixture(autouse=True)
-def _pytest_query_marker(request):
+def _pytest_query_marker(request: pytest.FixtureRequest):
     """Use the fixture to count the queries on the current node if it's
     marked with 'count_queries'.
 
@@ -138,16 +143,25 @@ def _pytest_query_marker(request):
           but place the fixture manually."""
     marker = request.node.get_closest_marker(PYTEST_QUERY_COUNT_MARKER)
     if marker:
-        _process_query_count_marker(request, *marker.args, **marker.kwargs)
+        _process_query_count_marker(
+            request.config, request, *marker.args, **marker.kwargs
+        )
 
 
-def pytest_configure(config):
+def pytest_configure(config: pytest.Config) -> None:
     config.django_queries_shared_directory = tempfile.mkdtemp(
         prefix="pytest-django-queries"
     )
 
+    # Stores whether the pytest-django plugin is installed
+    # Note: both names are valid, 'django' is an alias for 'pytest_django.plugin'
+    # (https://github.com/pytest-dev/pytest-django/blob/3955b1826f396cecd01d1c059e7703769ad94d81/pyproject.toml#L77-L78)
+    config.dj_queries_has_django_plugin = config.pluginmanager.hasplugin(
+        "django"
+    ) or config.pluginmanager.hasplugin("pytest_django.plugin")
 
-def pytest_unconfigure(config):
+
+def pytest_unconfigure(config: pytest.Config):
     results_path = config.django_queries_shared_directory
     test_results = {}
 
@@ -188,7 +202,7 @@ def pytest_configure_node(node):
     )
 
 
-def get_shared_directory(request):
+def get_shared_directory(request: pytest.FixtureRequest):
     """Returns a unique and temporary directory which can be shared by
     master or worker nodes in xdist runs.
     """
@@ -199,7 +213,7 @@ def get_shared_directory(request):
 
 
 @pytest.fixture
-def count_queries(request):
+def count_queries(request: pytest.FixtureRequest):
     """Wrap a test to count the number of performed queries."""
     from django.db import connection
 

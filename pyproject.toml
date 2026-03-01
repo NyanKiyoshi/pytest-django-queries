@@ -60,6 +60,7 @@ dev = [
 ]
 test = [
     "coverage",
+    "pytest-django",
     "pytest-xdist",
 ]
 
@@ -143,7 +144,16 @@ members = [
     ".",
 ]
 
-[tool.pytest.ini_options]
+[tool.pytest]
+addopts = [
+    # Prevents autoloading plugins as they could impact the test
+    # results, e.g., we could fail to detect that the plugin
+    # doesn't work if pytest-django isn't installed (as it's an
+    # optional plugin)
+    "--disable-plugin-autoload",
+    "-p", "xdist",
+    "-p", "django_queries",
+]
 testpaths = [
     "tests",
 ]
