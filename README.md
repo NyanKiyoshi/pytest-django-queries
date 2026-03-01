@@ -14,9 +14,6 @@
     </a>
   </p>
   <p>
-    <a href='https://github.com/NyanKiyoshi/pytest-django-queries/compare/v1.3.0rc1...master'>
-      <img src='https://img.shields.io/github/commits-since/NyanKiyoshi/pytest-django-queries/v1.3.0rc1.svg' alt='Commits since latest release' />
-    </a>
     <a href='https://pypi.python.org/pypi/pytest-django-queries'>
       <img src='https://img.shields.io/pypi/pyversions/pytest-django-queries.svg' alt='Supported versions' />
     </a>
