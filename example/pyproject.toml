@@ -9,13 +9,13 @@ description = "Example Django project that uses pytest-django-queries"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "django",
+    "django>=4.2.0",
 ]
 package = true
 
 [dependency-groups]
 dev = [
-    "pytest>=9.0.2",
+    "pytest>=7.2.0",
     "pytest-django>=4.12.0",
     "pytest-django-queries",
 ]

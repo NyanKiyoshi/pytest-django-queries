@@ -395,11 +395,11 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "django" }]
+requires-dist = [{ name = "django", specifier = ">=4.2.0" }]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "pytest", specifier = ">=9.0.2" },
+    { name = "pytest", specifier = ">=7.2.0" },
     { name = "pytest-django", specifier = ">=4.12.0" },
     { name = "pytest-django-queries", editable = "." },
 ]
@@ -818,6 +818,7 @@ dev = [
 ]
 test = [
     { name = "coverage" },
+    { name = "pytest-django" },
     { name = "pytest-xdist" },
 ]
 
@@ -842,6 +843,7 @@ dev = [
 ]
 test = [
     { name = "coverage" },
+    { name = "pytest-django" },
     { name = "pytest-xdist" },
 ]
 
