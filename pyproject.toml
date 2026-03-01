@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "pytest-django-queries"
-version = "1.2.0"
+version = "1.3.0rc1"
 description = "Generate performance reports from your django database performance tests."
 readme = "README.md"
 license = "MIT"
