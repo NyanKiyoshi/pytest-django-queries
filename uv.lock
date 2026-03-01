@@ -381,7 +381,7 @@ wheels = [
 [[package]]
 name = "example"
 version = "0.1.0"
-source = { virtual = "example" }
+source = { editable = "example" }
 dependencies = [
     { name = "django", version = "5.2.11", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
     { name = "django", version = "6.0.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },

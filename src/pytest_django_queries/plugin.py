@@ -199,7 +199,7 @@ def get_shared_directory(request):
 
 
 @pytest.fixture
-def count_queries(request):
+def count_queries(db, request):
     """Wrap a test to count the number of performed queries."""
     from django.db import connection
 
