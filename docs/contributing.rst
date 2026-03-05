@@ -15,7 +15,7 @@ Recommendations
 Code Style
 ++++++++++
 
-We are using `Black <https://github.com/python/black>`_ and `Flake 8 <http://flake8.pycqa.org/en/latest/>`_ to ensure a consistent code-style and reduce common Python issues in changes.
+We use `Ruff <https://docs.astral.sh/ruff/>`_ to ensure a consistent code-style and reduce common Python issues in code changes.
 
 You can install a checker by running ``pre-commit install`` after installing our development requirements (``pip install -e '.[dev]'``). After that, you can add your changes through ``git`` and run ``pre-commit`` to check if your changes are issue-free.
 

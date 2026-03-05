@@ -1,27 +1,21 @@
 repos:
-  - repo: https://github.com/ambv/black
-    rev: 6305bf1ae645ab7541be4f5028a86239316178eb  # frozen: 26.1.0
-    hooks:
-      - id: black
-        language_version: python3
-
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # frozen: v6.0.0
+    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c # frozen: v6.0.0
     hooks:
       - id: trailing-whitespace
 
-  - repo: https://github.com/PyCQA/flake8/
-    rev: d93590f5be797aabb60e3b09f2f52dddb02f349f  # frozen: 7.3.0
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: b969e2851312ca2b24bbec879ba4954341d1bd12 # frozen: v0.15.5
     hooks:
-      - id: flake8
-
-  - repo: https://github.com/PyCQA/isort
-    rev: a333737ed43df02b18e6c95477ea1b285b3de15a  # frozen: 8.0.1
-    hooks:
-      - id: isort
+      # Run the linter.
+      - id: ruff-check
+        args: [--fix]
+      # Run the formatter.
+      - id: ruff-format
 
   - repo: https://github.com/semgrep/pre-commit
-    rev: 'c4106f790c25be2d683c6cdbd7f9780c55f9b0a3'  # frozen: v1.153.1
+    rev: "300faea09b7bc82adb8280d3b640ba81f813e22a" # frozen: v1.154.0
     hooks:
       - id: semgrep
         entry: semgrep

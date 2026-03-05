@@ -36,7 +36,8 @@ def test_detect_pytest_django(
 
     # Run a dummy test that performs queries
     # and triggers a counting of the query number
-    pytester.makepyfile(test_file=f"""
+    pytester.makepyfile(
+        test_file=f"""
     import pytest
 
     {"@pytest.mark.django_db" if expects_django_plugin else ""}
@@ -54,7 +55,8 @@ def test_detect_pytest_django(
             cursor.execute("SELECT date('now');")
             cursor.execute("SELECT 1;")
             cursor.fetchone()
-    """)
+    """
+    )
     results = pytester.runpytest_inprocess(
         *DEFAULT_PYTEST_FLAGS,
         "-Werror",

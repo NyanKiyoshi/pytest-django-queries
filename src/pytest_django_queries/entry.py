@@ -49,9 +49,12 @@ def iter_entries(entries):
     for module_name, module_data in sorted(entries.items()):
         assert_type(module_data, dict)
 
-        yield module_name, (
-            Entry(test_name, module_name, test_data)
-            for test_name, test_data in sorted(module_data.items())
+        yield (
+            module_name,
+            (
+                Entry(test_name, module_name, test_data)
+                for test_name, test_data in sorted(module_data.items())
+            ),
         )
 
 
