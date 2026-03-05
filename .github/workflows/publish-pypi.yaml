@@ -71,7 +71,7 @@ jobs:
 
       - name: Publish to PyPI
         if: >-
-          github.event_name == 'release' 
+          github.event_name == 'release'
             || (
                 github.event_name == 'workflow_dispatch'
                 && github.event.inputs.pypi_repo == 'pypi'

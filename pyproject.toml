@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "pytest-django-queries"
-version = "1.3.0"
+version = "1.4.0"
 description = "Generate performance reports from your django database performance tests."
 readme = "README.md"
 license = "MIT"
@@ -65,33 +65,6 @@ test = [
     "pytest-xdist",
 ]
 
-[tool.black]
-target_version = ['py35', 'py36', 'py37', 'py38']
-include = '\.pyi?$'
-exclude = '''
-/(\.git/
-  |\.eggs
-  |\.hg
-  |__pycache__
-  |\.cache
-  |\.ipynb_checkpoints
-  |\.mypy_cache
-  |\.pytest_cache
-  |\.tox
-  |\.venv
-  |node_modules
-  |_build
-  |buck-out
-  |build
-  |dist
-  |media
-  |infrastructure
-  |templates
-  |locale
-  |docs
-)/
-'''
-
 [tool.coverage.run]
 branch = true
 omit = [
@@ -116,27 +89,6 @@ exclude_lines = [
     # Don't complain if non-runnable code isn't run:
     "if 0:",
     "if __name__ == .__main__.:",
-]
-
-[tool.isort]
-skip = [
-    "docs",
-]
-multi_line_output = 3
-include_trailing_comma = true
-line_length = 88
-known_first_party = [
-    "pytest_django_queries",
-]
-known_third_party = [
-    "beautifultable",
-    "bs4",
-    "click",
-    "django",
-    "jinja2",
-    "mock",
-    "pytest",
-    "setuptools",
 ]
 
 [tool.uv.workspace]

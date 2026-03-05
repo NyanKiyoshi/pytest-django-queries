@@ -162,9 +162,7 @@ class DiffGenerator(object):
 
     def _iter_module(self, module_entries):
         yield self.header_rows
-        for _, test_comparison in sorted(
-            module_entries.items()
-        ):  # type: SingleEntryComparison
+        for _, test_comparison in sorted(module_entries.items()):  # type: SingleEntryComparison
             yield test_comparison.to_string(lengths=self.longest_props)
 
     def _iter_modules(self):
