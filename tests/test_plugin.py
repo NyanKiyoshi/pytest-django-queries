@@ -183,9 +183,9 @@ def test_fixture_is_backing_up_old_results(testdir):
 
     # Ensure the results file was created
     assert results_path.check()
-    assert (
-        not old_results_path.check()
-    ), "Nothing should have been backed up--there was nothing to back up"
+    assert not old_results_path.check(), (
+        "Nothing should have been backed up--there was nothing to back up"
+    )
 
     # Create another test to generate more results,
     # to ensure the backup results were actually the previous ones
@@ -280,15 +280,12 @@ def test_marker_message(testdir):
 def test_implements_custom_options(testdir):
     """Ensure the custom options are added to pytest."""
     result = testdir.runpytest(*DEFAULT_PYTEST_FLAGS, "--help")
+
     result.stdout.fnmatch_lines(
         [
-            "django-queries:",
-            "*--django-db-bench=PATH",
-            "*Output file for storing the results. Default: .pytest-",
-            "*queries",
-            "*--django-backup-queries=[[]PATH[]]",
-            "*Whether the old results should be backed up or not",
-            "*before overriding",
+            "*--django-db-bench=PATH*",
+            "*--django-backup-queries*",
+            "*--django-record-mode=RECORD_MODE*",
         ]
     )
 
@@ -296,7 +293,8 @@ def test_implements_custom_options(testdir):
 def test_duplicated_queries(testdir):
     results_path = testdir.tmpdir.join("results.json")
 
-    script = testdir.makepyfile(test_module="""
+    script = testdir.makepyfile(
+        test_module="""
         import pytest
 
         @pytest.mark.count_queries
@@ -309,7 +307,8 @@ def test_duplicated_queries(testdir):
                 cursor.execute("SELECT 1;")
                 cursor.execute("SELECT 1;")
                 cursor.execute("SELECT 1;")
-                cursor.fetchone()""")
+                cursor.fetchone()"""
+    )
 
     results = testdir.runpytest(
         *DEFAULT_PYTEST_FLAGS, "--django-db-bench", results_path, script
@@ -333,7 +332,8 @@ def test_xdist_combine_racecondition(testdir):
 
     results_path = testdir.tmpdir.join("results.json")
 
-    script = testdir.makepyfile(test_module="""
+    script = testdir.makepyfile(
+        test_module="""
         import pytest
         import sys
 
@@ -346,7 +346,8 @@ def test_xdist_combine_racecondition(testdir):
             with connection.cursor() as cursor:
                 cursor.execute("SELECT date('now');")
                 cursor.execute("SELECT 1;")
-                cursor.fetchone()""")
+                cursor.fetchone()"""
+    )
 
     # Append current test files into the temporary test directory in order
     # to have settings.py available for PyPi packages

@@ -9,6 +9,7 @@ from os.path import isfile
 import pytest
 from django.test.utils import CaptureQueriesContext
 
+from pytest_django_queries.deprecations import PytestDjangoQueriesDeprecationWarning
 from pytest_django_queries.utils import create_backup
 
 # Defines the plugin marker name
@@ -17,14 +18,24 @@ PYTEST_QUERY_COUNT_FIXTURE_NAME = "count_queries"
 DEFAULT_RESULT_FILENAME = ".pytest-queries"
 DEFAULT_OLD_RESULT_FILENAME = ".pytest-queries.old"
 
+# TODO: add link to docs
+REPORT_PATH_DEPRECATION = (
+    "--django-db-bench and --django-backup-queries are deprecated. Migrate to the new "
+    "report formats as soon as possible by configuring the "
+    "[tool.pytest-django-queries] section in pyproject.toml instead. "
+    "See <<Link>> for more information. "
+    "Support will be removed in an upcoming version."
+)
+
 
 def get_worker_input(node):
     workerinput = getattr(node, "workerinput", None)
     if workerinput is None:
         workerinput = node.slaveinput
         warnings.warn(
-            "pytest-xdist<2.0 support will be dropped in pytest-django-queries 2.0",
-            category=DeprecationWarning,
+            "pytest-xdist<2.0 support will be dropped in pytest-django-queries v1.5.0",
+            category=PytestDjangoQueriesDeprecationWarning,
+            stacklevel=1,
         )
     return workerinput
 
@@ -37,7 +48,7 @@ def get_workerid(config: pytest.Config):
     if hasattr(config, "workerinput"):
         return config.workerinput["workerid"]
     elif hasattr(config, "slaveinput"):
-        # Deprecated: will be removed in pytest-django-queries 2.0
+        # Deprecated: will be removed in pytest-django-queries v1.5.0
         return config.slaveinput["slaveid"]
     else:
         return "master"
@@ -80,9 +91,12 @@ def pytest_addoption(parser):
         "--django-db-bench",
         dest="queries_results_save_path",
         action="store",
-        default=DEFAULT_RESULT_FILENAME,
+        default=None,
         metavar="PATH",
-        help="Output file for storing the results. Default: .pytest-queries",
+        help=(
+            f"[DEPRECATED] Output file for storing the results. "
+            f"Default: .pytest-queries - {REPORT_PATH_DEPRECATION}"
+        ),
     )
     group.addoption(
         "--django-backup-queries",
@@ -90,8 +104,23 @@ def pytest_addoption(parser):
         action="store",
         default=None,
         metavar="PATH",
-        help="Whether the old results should be backed up or not before overriding",
+        help=(
+            f"[DEPRECATED] Whether the old results should be backed up or not "
+            f" before overriding. - {REPORT_PATH_DEPRECATION}"
+        ),
         nargs="?",
+    )
+    group.addoption(
+        "--django-record-mode",
+        dest="django_record_mode",
+        default=None,
+        metavar="RECORD_MODE",
+        choices=["always", "never"],
+        help=(
+            "Controls the recording method. 'always' means it should always "
+            "override the previous report. 'never' means it should never attempt "
+            "to override the previous report. This control legacy"
+        ),
     )
 
 
@@ -113,8 +142,14 @@ def pytest_load_initial_conftests(early_config, parser, args):
     backup_path = early_config.known_args_namespace.queries_backup_results
 
     # Set default value if the flag was provided without value in arguments
-    if backup_path is None and "--django-backup-queries" in args:
-        backup_path = DEFAULT_OLD_RESULT_FILENAME
+    if "--django-backup-queries" in args:
+        warnings.warn(
+            REPORT_PATH_DEPRECATION,
+            category=PytestDjangoQueriesDeprecationWarning,
+            stacklevel=1,
+        )
+        if backup_path is None:
+            backup_path = DEFAULT_OLD_RESULT_FILENAME
 
     early_config.known_args_namespace.queries_backup_results = backup_path
 
@@ -159,6 +194,15 @@ def pytest_configure(config: pytest.Config) -> None:
     config.dj_queries_has_django_plugin = config.pluginmanager.hasplugin(
         "django"
     ) or config.pluginmanager.hasplugin("pytest_django.plugin")
+
+    if config.known_args_namespace.queries_results_save_path is not None:
+        warnings.warn(
+            REPORT_PATH_DEPRECATION,
+            category=PytestDjangoQueriesDeprecationWarning,
+            stacklevel=1,
+        )
+    else:
+        config.known_args_namespace.queries_results_save_path = DEFAULT_RESULT_FILENAME
 
 
 def pytest_unconfigure(config: pytest.Config):

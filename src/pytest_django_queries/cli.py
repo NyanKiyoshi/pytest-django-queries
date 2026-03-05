@@ -1,6 +1,9 @@
+import dataclasses
 import json
+from os import PathLike
 from os.path import abspath, dirname
 from os.path import join as pathjoin
+from pathlib import Path
 
 import click
 from jinja2 import Template
@@ -28,16 +31,33 @@ def _write_html_to_file(content, path):
         fp.write(content)
 
 
-class JsonReportFileParamType(click.File):
+@dataclasses.dataclass
+class JSONFile:
+    path: Path
+    data: dict
+
+    @property
+    def directory(self) -> Path:
+        return self.path.resolve().parent
+
+
+class JsonReportFileParamType(click.Path):
     name = "report_file"
 
-    def convert(self, value, param, ctx):
-        with super(JsonReportFileParamType, self).convert(value, param, ctx) as fp:
+    def convert(self, value, param, ctx) -> JSONFile:
+        path: PathLike[str] | bytes | str = super().convert(value, param, ctx)
+
+        if not isinstance(path, Path):
+            if isinstance(path, bytes):
+                path = path.decode()
+            path = Path(path)
+
+        with path.open("rb") as fp:
             try:
                 loaded = json.load(fp)
                 if type(loaded) is not dict:
                     self.fail("The file is not a dictionary", param, ctx)
-                return loaded
+                return JSONFile(path=path, data=loaded)
             except ValueError as e:
                 self.fail("The file is not valid json: %s" % str(e), param, ctx)
 
@@ -46,7 +66,7 @@ class Jinja2TemplateFile(click.File):
     name = "jinja2_file"
 
     def convert(self, value, param, ctx):
-        with super(Jinja2TemplateFile, self).convert(value, param, ctx) as fp:
+        with super().convert(value, param, ctx) as fp:
             try:
                 return Template(fp.read(), trim_blocks=True)
             except jinja_exceptions.TemplateError as e:
@@ -62,16 +82,18 @@ def main():
 
 @main.command()
 @click.argument(
-    "input_file", type=JsonReportFileParamType("r"), default=DEFAULT_RESULT_FILENAME
+    "input_file",
+    type=JsonReportFileParamType(),
+    default=DEFAULT_RESULT_FILENAME,
 )
-def show(input_file):
+def show(input_file: JSONFile):
     """View a given report."""
-    return print_entries(input_file)
+    return print_entries(input_file.data)
 
 
 @main.command()
 @click.argument(
-    "input_file", type=JsonReportFileParamType("r"), default=DEFAULT_RESULT_FILENAME
+    "input_file", type=JsonReportFileParamType(), default=DEFAULT_RESULT_FILENAME
 )
 @click.option(
     "-o",
@@ -87,12 +109,12 @@ def show(input_file):
     default=DEFAULT_TEMPLATE_PATH,
     help="Use a custom jinja2 template for rendering HTML results.",
 )
-def html(input_file, output, template):
+def html(input_file: JSONFile, output: str, template: Template):
     """
     Render the results as HTML instead of a raw table.
 
     Note: you can pass a dash (-) as the path to print the HTML content to stdout."""
-    html_content = entries_to_html(input_file, template)
+    html_content = entries_to_html(input_file.data, template)
 
     if output == "-":
         click.echo(html_content, nl=False)
@@ -103,15 +125,15 @@ def html(input_file, output, template):
 
 @main.command()
 @click.argument(
-    "left_file", type=JsonReportFileParamType("r"), default=DEFAULT_OLD_RESULT_FILENAME
+    "left_file", type=JsonReportFileParamType(), default=DEFAULT_OLD_RESULT_FILENAME
 )
 @click.argument(
-    "right_file", type=JsonReportFileParamType("r"), default=DEFAULT_RESULT_FILENAME
+    "right_file", type=JsonReportFileParamType(), default=DEFAULT_RESULT_FILENAME
 )
-def diff(left_file, right_file):
+def diff(left_file: JSONFile, right_file: JSONFile):
     """Render the diff as a console table with colors."""
-    left = flatten_entries(left_file)
-    right = flatten_entries(right_file)
+    left = flatten_entries(left_file.data)
+    right = flatten_entries(right_file.data)
     first_line = True
     for module_name, lines in DiffGenerator(left, right):
         if not first_line:

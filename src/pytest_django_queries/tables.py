@@ -1,11 +1,12 @@
 import click
+from jinja2 import Template
 from beautifultable import BeautifulTable
 
 from pytest_django_queries.entry import Entry, iter_entries
 from pytest_django_queries.filters import format_underscore_name_to_human
 
 
-def print_entries(data):
+def print_entries(data: dict) -> None:
     table = BeautifulTable()
     table.columns.header = ["Module", "Tests"]
     for module_name, module_entries in iter_entries(data):
@@ -17,7 +18,7 @@ def print_entries(data):
     click.echo(table)
 
 
-def entries_to_html(data, template):
+def entries_to_html(data: dict, template: Template) -> str:
     html_content = template.render(
         data=iter_entries(data), humanize=format_underscore_name_to_human
     )
