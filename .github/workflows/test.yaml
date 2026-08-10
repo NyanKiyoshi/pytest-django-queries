@@ -106,11 +106,10 @@ jobs:
   upload-coverage-non-forks:
     if: >-
       ${{
-          github.ref == 'refs/heads/main'
-          || (
-              github.event.pull_request.head.repo.full_name == 'NyanKiyoshi/pytest-django-queries'
-              && github.actor != 'dependabot[bot]'
-          )
+          (
+            github.ref == 'refs/heads/main'
+            || github.event.pull_request.head.repo.full_name == 'NyanKiyoshi/pytest-django-queries'
+          ) && github.actor != 'dependabot[bot]'
       }}
     runs-on: ubuntu-latest
     environment: codecov
@@ -144,10 +143,12 @@ jobs:
   upload-coverage-forks:
     if: >-
       ${{
-        (
-          github.ref != 'refs/heads/main'
-          && github.event.pull_request.head.repo.full_name != 'NyanKiyoshi/pytest-django-queries'
-        ) || github.actor == 'dependabot[bot]'
+        ! (
+          (
+            github.ref == 'refs/heads/main'
+            || github.event.pull_request.head.repo.full_name == 'NyanKiyoshi/pytest-django-queries'
+          ) && github.actor != 'dependabot[bot]'
+        )
       }}
     runs-on: ubuntu-latest
     permissions:
